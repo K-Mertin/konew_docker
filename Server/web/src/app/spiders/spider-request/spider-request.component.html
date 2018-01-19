@@ -1,0 +1,56 @@
+<div class="container">
+  <form [formGroup]="requestForm">
+    
+    <div class="col-md-6">
+        <label>需求種類</label>
+    </div>
+    <div class="col-md-6">
+    <div class="form-group">
+      <select class="form-control" style="width: 130px" id="gender" formControlName="requestType">
+        <option *ngFor="let type of requestTypes" [value]="type.value">
+          {{type.display}}
+        </option>
+      </select>
+    </div>
+    </div>
+    <div class="col-md-6">
+      <div class="col-md-12">
+          <label>主要關鍵字</label>
+          <input type="text" [(ngModel)]="iSearchKey" [ngModelOptions]="{standalone: true}" (keyup.enter)="addSearchKey()">
+          <a (click)="addSearchKey()" class="label label-success">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+          </a>
+      </div>
+      <div formArrayName="searchKeys">
+        <div *ngFor="let searchKey of requestForm.controls['searchKeys'].controls; let i=index" class="col-md-6">
+         <label class="label label-primary">{{searchKey.value}}</label>
+          <a class="label label-danger pull-right" *ngIf="requestForm.controls['searchKeys'].controls.length > 0" (click)="removeSearchKey(i)">
+            <i class="fa fa-minus fa-1" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-md-6">
+      <div class="col-md-12">
+          <label>次要關鍵字</label>
+          <input type="text" [(ngModel)]="iReferenceKey" [ngModelOptions]="{standalone: true}" (keyup.enter)="addReferenceKey()">
+          <a (click)="addReferenceKey()" class="label label-success">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+          </a>
+      </div>
+      <div formArrayName="referenceKeys">
+        <div *ngFor="let referenceKey of requestForm.controls['referenceKeys'].controls; let i=index" class="col-md-6">
+         <label class="label label-info ">{{referenceKey.value}}</label>
+          <a class="label label-danger pull-right" *ngIf="requestForm.controls['referenceKeys'].controls.length > 0" (click)="removeReferenceKey(i)">
+            <i class="fa fa-minus fa-1" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div class="col-md-1 pull-right">
+    <button (click)="submit()" class="btn btn-primary" *ngIf="requestForm.value.searchKeys.length>0">新增需求</button>
+  </div>
+</div>

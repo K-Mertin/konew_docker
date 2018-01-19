@@ -1,0 +1,14 @@
+/* You can add global styles to this file, and also import other style files
+.searchKeys {
+    margin-bottom: 1em;
+}
+
+.referenceKeys {
+    margin-bottom: 1em;
+    margin-top: 1em;
+} */
+
+.modal-title {
+    font-size: 2em;
+    font-weight: bold;
+}

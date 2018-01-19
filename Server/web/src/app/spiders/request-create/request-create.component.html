@@ -1,0 +1,63 @@
+<div class="modal-dialog" role="document">
+  <div class="modal-content col-md-12">
+    <div class="modal-header">
+      <span class="modal-title" id="exampleModalLabel">需求建立</span>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="requestForm">
+        <div class="form-group col-md-12">
+          <label>需求種類</label>
+          <select class="form-control" formControlName="requestType">
+            <option *ngFor="let type of requestTypes" [value]="type.value">
+              {{type.display}}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-12 searchKeys">
+          <label>主要關鍵字</label>
+          <input type="text" [(ngModel)]="iSearchKey" [ngModelOptions]="{standalone: true}" (keyup.enter)="addSearchKey()">
+          <a (click)="addSearchKey()" class="label label-success">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+          </a>
+        </div>
+        <div formArrayName="searchKeys">
+          <div *ngFor="let searchKey of requestForm.controls['searchKeys'].controls; let i=index" class="col-md-6">
+            <h4>
+              <label class="label label-primary">{{searchKey.value}}</label>
+              <a class="label label-danger pull-right" *ngIf="requestForm.controls['searchKeys'].controls.length > 0" (click)="removeSearchKey(i)">
+                <i class="fa fa-minus fa-1" aria-hidden="true"></i>
+              </a>
+            </h4>
+          </div>
+        </div>
+
+        <div class="col-md-12 referenceKeys">
+          <label>次要關鍵字</label>
+          <input type="text" [(ngModel)]="iReferenceKey" [ngModelOptions]="{standalone: true}" (keyup.enter)="addReferenceKey()">
+          <a (click)="addReferenceKey()" class="label label-success">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <div formArrayName="referenceKeys">
+          <div *ngFor="let referenceKey of requestForm.controls['referenceKeys'].controls; let i=index" class="col-md-6">
+            <h4>
+              <label class="label label-info ">{{referenceKey.value}}</label>
+              <a class="label label-danger pull-right" *ngIf="requestForm.controls['referenceKeys'].controls.length > 0" (click)="removeReferenceKey(i)">
+                <i class="fa fa-minus fa-1" aria-hidden="true"></i>
+              </a>
+            </h4>
+          </div>
+        </div>
+
+      </form>
+    </div>
+    <div class="modal-footer col-md-12">
+      <button type="button" class="btn btn-secondary" data-dismiss="modal" #closeTag>關閉</button>
+      <button type="button" class="btn btn-primary" (click)="createRequest()" *ngIf="requestForm.value.searchKeys.length>0">新增需求</button>
+    </div>
+  </div>
+</div>

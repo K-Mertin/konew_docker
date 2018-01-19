@@ -1,0 +1,27 @@
+service:
+  restart: always
+  build: ./service
+  expose:
+    - "8000"
+  volumes:
+    - /usr/src/app/
+    - ./Log:/usr/src/app/Log
+  env_file: .env
+  command: /usr/local/bin/gunicorn -w 2 -b :8000  FlaskService:app
+
+web:
+  build: ./web
+  volumes:
+    - ./web:/app/
+  command: ng build -e prod
+
+nginx:
+  restart: always
+  build: ./nginx/
+  ports:
+    - "9999:8080"
+  volumes:
+    - /www/static
+    - ./web:/usr/src/app/web
+  links:
+    - service:service

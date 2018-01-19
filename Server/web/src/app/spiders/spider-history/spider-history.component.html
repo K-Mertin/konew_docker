@@ -1,0 +1,76 @@
+<div class="container">
+  <div class="row">
+    <label for="rowCount">每頁顯示: </label>
+    <select style="width: 130px" id="rowCount" [(ngModel)]="pagination.pageSize" (change)="loadRequests()">
+      <option *ngFor="let row of rowList" [value]="row.value">
+        {{row.display}}
+      </option>
+    </select>
+
+    <label>，總共: </label>
+    {{pagination.totalCount}}
+    <label>筆資料 </label>
+    <button class="btn btn-primary btn-md pull-right" data-toggle="modal" data-target="#requestCreateModal">建立新需求</button>
+  </div>
+
+  <!-- Table -->
+  <table class="table table-striped ">
+    <thead>
+      <tr>
+        <th colspan='6' class="text-center"><h4>需求清單</h4></th>
+      </tr>
+      <tr>
+        <th>需求代號</th>
+        <th>狀態</th>
+        <th>需求日期</th>
+        <!-- <th>RequestType</th> -->
+        <th>主要關鍵字</th>
+        <th>參考關鍵字</th>
+        <th>功能</th>
+      </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let request of demoRequest" [ngClass]="getRowColor(request)">
+      <td>
+        {{request.requestId}}
+      </td>
+      <td>{{request.status}}</td>
+      <td>{{request.createDate}}</td>
+      <!-- <td>{{request.requestType}}</td> -->
+      <td>{{request.searchKeys}}</td>
+      <td>{{request.referenceKeys}}</td>
+      <td>
+        <a [routerLink]="['../../spider/result/',request.requestId]" class="btn btn-primary">
+          <i class="fa fa-search" aria-hidden="true"></i>
+        </a>
+        <a href="#" class="btn btn-success" data-toggle="modal" data-target="#requestEditModal" (click)="setEditRequest(request)"
+          *ngIf="request.status!='processing'">
+          <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+        </a>
+        <a class="btn btn-danger" (click)="deleteRequest(request)" *ngIf="request.status!='processing'">
+          <i class="fa fa-trash-o" aria-hidden="true"></i>
+        </a>
+      </td>
+    </tr>
+  </tbody>
+  </table>
+
+
+  <!-- Modal -->
+  <div class="modal fade col-md-12" id="requestEditModal" tabindex="-1" role="dialog" aria-labelledby="rquestEditModalLabel"
+    aria-hidden="true">
+    <app-request-edit [requestEdit]="requestEdit" [loadRequest]="theBoundCallback"></app-request-edit>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade col-md-12" id="requestCreateModal" tabindex="-1" role="dialog" aria-labelledby="requestCreateModalLabel"
+    aria-hidden="true">
+    <app-request-create [loadRequest]="theBoundCallback"></app-request-create>
+  </div>
+</div>
+
+<div class="text-center">
+  <pagination [boundaryLinks]="true" [totalItems]="pagination.totalCount" [itemsPerPage]="pagination.pageSize" [(ngModel)]="pagination.pageNumber"
+    class="pagination-sm" (pageChanged)="pageChanged($event)" previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;"
+    lastText="&raquo;"></pagination>
+</div>
