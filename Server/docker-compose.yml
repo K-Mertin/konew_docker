@@ -12,16 +12,17 @@ service:
 web:
   build: ./web
   volumes:
-    - ./web:/app/
+    - /app
   command: ng build -e prod
 
 nginx:
   restart: always
   build: ./nginx/
-  ports:
+  ports:  
     - "9999:8080"
   volumes:
     - /www/static
-    - ./web:/usr/src/app/web
+  volumes_from:
+    - web
   links:
     - service:service
