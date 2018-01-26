@@ -19,6 +19,11 @@ import { SpiderResultResolver } from './_resolver/spider-result.resolver';
 import { RequestEditComponent } from './spiders/request-edit/request-edit.component';
 import { RequestCreateComponent } from './spiders/request-create/request-create.component';
 import { SpiderHistoryResolver } from './_resolver/spider-history.rqsolver';
+import { RelationlistComponent } from './relations/relationlist/relationlist.component';
+import { RelationService } from './_service/relation.service';
+import { RelationqueryComponent } from './relations/relationquery/relationquery.component';
+import { RelationEditComponent } from './relations/relation-edit/relation-edit.component';
+import { FileUploadModule } from 'ng2-file-upload';
 
 
 @NgModule({
@@ -30,8 +35,11 @@ import { SpiderHistoryResolver } from './_resolver/spider-history.rqsolver';
     SpiderResultComponent,
     HomeComponent,
     RequestEditComponent,
-    RequestCreateComponent
-  ],
+    RequestCreateComponent,
+    RelationlistComponent,
+    RelationqueryComponent,
+    RelationEditComponent
+],
   imports: [
     BrowserModule,
     HttpModule,
@@ -40,13 +48,15 @@ import { SpiderHistoryResolver } from './_resolver/spider-history.rqsolver';
     FormsModule,
     HttpClientModule,
     PaginationModule.forRoot(),
-    ButtonsModule.forRoot()
+    ButtonsModule.forRoot(),
+    FileUploadModule
   ],
   providers: [
     DemoServiceService,
     AlertifyService,
     SpiderResultResolver,
-    SpiderHistoryResolver
+    SpiderHistoryResolver,
+    RelationService
   ],
   bootstrap: [AppComponent]
 })

@@ -1,8 +1,10 @@
 # mongo.py
-from flask import Flask, jsonify, request, g
+from flask import Flask, jsonify, request, g, url_for, send_from_directory
 from DataAccess import DataAccess
 from flask_cors import CORS
 from Logger import Logger
+from werkzeug import secure_filename
+
 import json
 import configparser
 import logging
@@ -10,6 +12,11 @@ import os
 import datetime
 
 app = Flask('Flask-Service')
+ALLOWED_EXTENSIONS = set(['csv'])
+app.config['UPLOAD_FOLDER'] = os.getcwd()
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+
+app.config['CORS_SUPPORTS_CREDENTIALS'] = True 
 CORS(app)
 
 @app.before_request
@@ -117,6 +124,86 @@ def remove_request():
     g.dataAccess.remove_request(data['_id'])
     
     return jsonify("deleted")
+
+@app.route('/api/relation/key/<queryType>/<key>', methods=['GET'])
+def get_relation_keyList(queryType,key):
+    print(queryType,key)
+    results = g.dataAccess.get_relation_keyList(queryType,key)
+
+    return jsonify(list(map(lambda x : x['_id'] ,list(results))))
+
+@app.route('/api/relation/<queryType>/<key>', methods=['GET'])
+def get_relations(queryType,key):
+    results = g.dataAccess.get_relations(queryType,key)
+
+    relations = [] 
+    for r in results:
+        relations.append({
+            '_id':str(r['_id']),
+            'reason':r['reason'],
+            'subjects':r['subjects'],
+            'objects':r['objects'],
+            'createDate':r['createDate'],
+            'createUser':r['createUser'],
+            'modifyDate':r['modifyDate'],
+            'modifyUser':r['modifyUser']
+        })
+
+    return jsonify(relations)
+
+@app.route('/api/relation', methods=['POST'])
+def add_relation():
+    
+    data=json.loads(request.data)
+    print(data)
+    app.logger.info('add_relation:'+ str(data))
+
+    g.dataAccess.insert_relation(data)
+
+    return jsonify("recevied")
+
+@app.route('/api/relation/<id>', methods=['DELETE'])
+def delete_relation(id):
+    app.logger.info('delete_relation:'+ id)
+    ip =  request.remote_addr
+    g.dataAccess.delete_relation(id, ip)
+
+    return jsonify("deleted")
+
+@app.route('/api/relation', methods=['PUT'])
+def update_relation():
+    data=json.loads(request.data)
+    print(data)
+    app.logger.info('update_relation:'+data['_id'])
+    ip =  request.remote_addr
+
+    g.dataAccess.update_relation(data, ip)
+
+    return jsonify("updated")
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
+
+@app.route('/api/relation/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'],
+                               filename)
+
+@app.route('/api/relation/uploads', methods=['POST'])
+def upload_file():
+    print('receivedata')
+    print(request)
+    # file = request.files['file']
+    # if file and allowed_file(file.filename):
+    #     filename = secure_filename(file.filename)
+    #     file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    #     file_url = url_for('uploaded_file', filename=filename)
+    #     return file_url
+    print('failed')
+    return jsonify('failed')
+
 
 def Setting():
     config = configparser.ConfigParser()

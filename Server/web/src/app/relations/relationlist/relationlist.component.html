@@ -1,0 +1,183 @@
+<div class="container">
+  <div class="text-center">
+    <h3>關係人資料建檔</h3>
+  </div>
+
+  <!-- <div class="row">
+    <div class="col-md-3">
+      <h3>匯入資料</h3>
+      <input type="file" ng2FileSelect [uploader]="uploader" />
+    </div>
+  </div>
+
+  <h1>图片上传</h1>
+  <form method="post" enctype="multipart/form-data" action="http://localhost:5000/api/relation/uploads">
+        <input type="file" name="file">
+        <input type="submit" value="Submit">
+  </form>
+
+  <div class="col-md-9" style="margin-bottom: 40px">
+
+    <h3>Upload queue</h3>
+    <p>Queue length: {{ uploader?.queue?.length }}</p>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th width="50%">Name</th>
+          <th>Size</th>
+          <th>Progress</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of uploader.queue">
+          <td>
+            <strong>{{ item?.file?.name }}</strong>
+          </td>
+          <td *ngIf="uploader.isHTML5" nowrap>{{ item?.file?.size/1024/1024 | number:'.2' }} MB</td>
+          <td *ngIf="uploader.isHTML5">
+            <div class="progress" style="margin-bottom: 0;">
+              <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div>
+            </div>
+          </td>
+          <td class="text-center">
+            <span *ngIf="item.isSuccess">
+              <i class="glyphicon glyphicon-ok"></i>
+            </span>
+            <span *ngIf="item.isCancel">
+              <i class="glyphicon glyphicon-ban-circle"></i>
+            </span>
+            <span *ngIf="item.isError">
+              <i class="glyphicon glyphicon-remove"></i>
+            </span>
+          </td>
+          <td nowrap>
+            <button type="button" class="btn btn-success btn-xs" (click)="item.upload()" [disabled]="item.isReady || item.isUploading || item.isSuccess">
+              <span class="glyphicon glyphicon-upload"></span> Upload
+            </button>
+            <button type="button" class="btn btn-warning btn-xs" (click)="item.cancel()" [disabled]="!item.isUploading">
+              <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+            </button>
+            <button type="button" class="btn btn-danger btn-xs" (click)="item.remove()">
+              <span class="glyphicon glyphicon-trash"></span> Remove
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div>
+      <div>
+        Queue progress:
+        <div class="progress" style="">
+          <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': uploader.progress + '%' }"></div>
+        </div>
+      </div>
+      <button type="button" class="btn btn-success btn-s" (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
+        <span class="glyphicon glyphicon-upload"></span> Upload all
+      </button>
+      <button type="button" class="btn btn-warning btn-s" (click)="uploader.cancelAll()" [disabled]="!uploader.isUploading">
+        <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
+      </button>
+      <button type="button" class="btn btn-danger btn-s" (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">
+        <span class="glyphicon glyphicon-trash"></span> Remove all
+      </button>
+    </div>
+
+  </div> -->
+
+
+  <form [formGroup]="relationForm">
+    <div class="form-group">
+      <div class="col-sm-6">
+        <label>登錄原因：</label>
+        <input class="input" type="text" placeholder="登錄原因" formControlName="reason">
+        <div *ngIf="relationForm.controls['reason'].touched && relationForm.controls['reason'].invalid" class="alert alert-danger">
+          請輸入登錄原因
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <label>登錄人員：</label>
+      <input class="input" type="text" placeholder="建檔人員" formControlName="user">
+      <div *ngIf="relationForm.controls['user'].touched && relationForm.controls['user'].invalid" class="alert alert-danger">
+        請輸入建檔人員
+      </div>
+    </div>
+
+    <div formArrayName="subjects">
+      <div class="col-md-12">
+        <div class="margin-20 pull-right">
+          <button (click)="addSubject()" class='btn btn-primary'>
+            <i class="fa fa-plus fa-1" aria-hidden="true">添加借款人</i>
+          </button>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div *ngFor="let subject of relationForm.controls['subjects'].controls; let i=index">
+          <span>借款人 {{i + 1}}</span>
+          <button class='btn btn-warning pull-right' *ngIf="relationForm.controls['subjects'].controls.length > 1" (click)="remove(i,'subjects')">
+            <i class="fa fa-times"></i>
+          </button>
+          <div class="form-group" [formGroupName]="i">
+            <input class="input" type="text" placeholder="負責人/公司名" formControlName="name">
+            <input class="input" type="text" placeholder="負責人/公司統編" formControlName="idNumber">
+            <input class="input" type="text" placeholder="註記" formControlName="memo">
+            <div *ngIf="(relationForm.controls['subjects'].controls[i].controls.idNumber.touched||relationForm.controls['subjects'].controls[i].controls.name.touched) && relationForm.controls['subjects'].controls[i].hasError('checkValidate')"
+              class="alert alert-danger">
+              姓名與統編須擇一輸入
+            </div>
+            <div *ngIf="relationForm.controls['subjects'].controls[i].controls.memo.touched && relationForm.controls['subjects'].controls[i].controls.memo.invalid"
+              class="alert alert-danger">
+              請輸入註記
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <div formArrayName="objects">
+      <div class="col-md-12">
+        <div class="margin-20 pull-right">
+          <button (click)="addObject()" class='btn btn-primary'>
+            <i class="fa fa-plus fa-1" aria-hidden="true">添加關係人</i>
+          </button>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div *ngFor="let object of relationForm.controls['objects'].controls; let i=index">
+
+          <span>關係人/公司 {{i + 1}}</span>
+          <button class='btn btn-warning pull-right' *ngIf="relationForm.controls['objects'].controls.length > 1" (click)="remove(i,'objects')">
+            <i class="fa fa-times"></i>
+          </button>
+
+          <div class="form-group" [formGroupName]="i">
+            <input class="input" type="text" placeholder="關係人/公司名" formControlName="name">
+            <input class="input" type="text" placeholder="關係人/公司統編" formControlName="idNumber">
+            <input class="input" type="text" placeholder="關係註記" formControlName="memo">
+            <div *ngIf="(relationForm.controls['objects'].controls[i].controls.idNumber.touched||relationForm.controls['objects'].controls[i].controls.name.touched) && relationForm.controls['objects'].controls[i].hasError('checkValidate')"
+              class="alert alert-danger">
+              姓名與統編須擇一輸入
+            </div>
+            <div *ngIf="relationForm.controls['objects'].controls[i].controls.memo.touched && relationForm.controls['objects'].controls[i].controls.memo.invalid"
+              class="alert alert-danger">
+              請輸入關係註記
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div class="button pull-right">
+    <button class="btn btn-danger" *ngIf="relationForm.touched" (click)="clearForm()">清除</button>
+    <button class="btn btn-primary" *ngIf="!relationForm.invalid" (click)="addRelation()">新增</button>
+  </div>
+
+
+</div>
