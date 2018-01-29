@@ -69,7 +69,12 @@
           <tr *ngFor="let object of relation.objects">
             <td>{{object.idNumber}} </td>
             <td>{{object.name}}</td>
-            <td> {{object.memo}}</td>
+            <td>
+            <div  *ngFor="let r of object.relationType">
+                <label class="label label-primary">{{r.itemName}}</label>
+                <label class="label label-default" *ngIf="r.itemName==='其他'">{{object.memo}}</label> 
+            </div>
+          </td>
           </tr>
         </table>
       </div>

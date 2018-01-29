@@ -1,5 +1,5 @@
 # mongo.py
-from flask import Flask, jsonify, request, g, url_for, send_from_directory
+from flask import Flask, jsonify, request, g,  redirect, url_for
 from DataAccess import DataAccess
 from flask_cors import CORS
 from Logger import Logger
@@ -11,13 +11,12 @@ import logging
 import os
 import datetime
 
-app = Flask('Flask-Service')
-ALLOWED_EXTENSIONS = set(['csv'])
-app.config['UPLOAD_FOLDER'] = os.getcwd()
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+UPLOAD_FOLDER = os.curdir
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'csv'])
 
-app.config['CORS_SUPPORTS_CREDENTIALS'] = True 
+app = Flask('Flask-Service')
 CORS(app)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.before_request
 def before_request():
@@ -134,11 +133,11 @@ def get_relation_keyList(queryType,key):
 
 @app.route('/api/relation/<queryType>/<key>', methods=['GET'])
 def get_relations(queryType,key):
-    results = g.dataAccess.get_relations(queryType,key)
+    relations = g.dataAccess.get_relations(queryType,key)
 
-    relations = [] 
-    for r in results:
-        relations.append({
+    result = [] 
+    for r in relations:
+        result.append({
             '_id':str(r['_id']),
             'reason':r['reason'],
             'subjects':r['subjects'],
@@ -149,7 +148,7 @@ def get_relations(queryType,key):
             'modifyUser':r['modifyUser']
         })
 
-    return jsonify(relations)
+    return jsonify(result)
 
 @app.route('/api/relation', methods=['POST'])
 def add_relation():
@@ -181,30 +180,6 @@ def update_relation():
 
     return jsonify("updated")
 
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
-
-
-@app.route('/api/relation/uploads/<filename>')
-def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'],
-                               filename)
-
-@app.route('/api/relation/uploads', methods=['POST'])
-def upload_file():
-    print('receivedata')
-    print(request)
-    # file = request.files['file']
-    # if file and allowed_file(file.filename):
-    #     filename = secure_filename(file.filename)
-    #     file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    #     file_url = url_for('uploaded_file', filename=filename)
-    #     return file_url
-    print('failed')
-    return jsonify('failed')
-
-
 def Setting():
     config = configparser.ConfigParser()
     with open('Config.ini') as file:
@@ -232,7 +207,45 @@ def Setting():
     app.logger.addHandler(streamHandler)
 
     app.logger.info('Finish Setting')
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/api/relation/upload', methods=['POST'])
+def upload_file():
+    file = request.files['Document']
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         
+        file = open(filename,'r') 
+        print (file.read()) 
+
+        return jsonify('success')
+    else:
+        return jsonify('failed')
+
+@app.route('/api/relation/download', methods=['GET'])
+def download_relations():
+    relations = g.dataAccess.download_relations()
+
+    result = [] 
+    for r in relations:
+
+        result.append({
+            '_id':str(r['_id']),
+            'reason':r['reason'],
+            'subjects':r['subjects'],
+            'objects':  r['objects'],
+            'createDate':r['createDate'],
+            'createUser':r['createUser'],
+            'modifyDate':r['modifyDate'],
+            'modifyUser':r['modifyUser']
+        })
+
+    return jsonify(result)
+
 if __name__ == '__main__':
     Setting()
     app.run(debug=True)

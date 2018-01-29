@@ -23,7 +23,7 @@ import { RelationlistComponent } from './relations/relationlist/relationlist.com
 import { RelationService } from './_service/relation.service';
 import { RelationqueryComponent } from './relations/relationquery/relationquery.component';
 import { RelationEditComponent } from './relations/relation-edit/relation-edit.component';
-import { FileUploadModule } from 'ng2-file-upload';
+import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown/angular2-multiselect-dropdown';
 
 
 @NgModule({
@@ -49,7 +49,7 @@ import { FileUploadModule } from 'ng2-file-upload';
     HttpClientModule,
     PaginationModule.forRoot(),
     ButtonsModule.forRoot(),
-    FileUploadModule
+    AngularMultiSelectModule
   ],
   providers: [
     DemoServiceService,

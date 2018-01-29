@@ -1,7 +1,7 @@
 <div class="modal-dialog modal-lg" role="document">
   <div class="modal-content col-md-12">
     <div class="modal-header">
-      <span class="modal-title" id="relationEditModal">關係人編集</span>
+      <span class="modal-title" id="relationEditModal">關係人編輯</span>
       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -18,10 +18,10 @@
           </div>
         </div>
         <div class="col-sm-6">
-          <label>登錄人員：</label>
-          <input class="input" type="text" placeholder="建檔人員" formControlName="user">
+          <label>修改人員</label>
+          <input class="input" type="text" placeholder="修改人員" formControlName="user">
           <div *ngIf="relationForm.controls['user'].touched && relationForm.controls['user'].invalid" class="alert alert-danger">
-            請輸入建檔人員
+            請輸入修改人員
           </div>
         </div>
 
@@ -79,6 +79,8 @@
                 <input class="input" type="text" placeholder="關係人/公司名" formControlName="name">
                 <input class="input" type="text" placeholder="關係人/公司統編" formControlName="idNumber">
                 <input class="input" type="text" placeholder="關係註記" formControlName="memo">
+                <angular2-multiselect [data]="dropdownList" [settings]="dropdownSettings" formControlName="relationType">
+                </angular2-multiselect>
                 <div *ngIf="(relationForm.controls['objects'].controls[i].controls.idNumber.touched||relationForm.controls['objects'].controls[i].controls.name.touched) && relationForm.controls['objects'].controls[i].hasError('checkValidate')"
                   class="alert alert-danger">
                   姓名與統編須擇一輸入
@@ -100,4 +102,3 @@
     </div>
   </div>
 </div>
-

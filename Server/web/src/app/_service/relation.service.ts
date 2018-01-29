@@ -21,12 +21,12 @@ export class RelationService {
 
   getAutoComplete(key: string, type: string): Observable<string[]> {
     return this._http
-      .get<string[]>(this.baseUrl + '/key/' + type + '/' + key );
+      .get<string[]>(this.baseUrl + '/key/' + type + '/' + key);
   }
 
   search(key: string, type: string): Observable<Relation[]> {
     return this._http
-      .get<Relation[]>(this.baseUrl + '/' + type + '/' + key );
+      .get<Relation[]>(this.baseUrl + '/' + type + '/' + key);
   }
 
   addRelation(relation: Relation) {
@@ -36,14 +36,27 @@ export class RelationService {
     });
   }
 
-  deleteRelation( id: string) {
+  deleteRelation(id: string) {
     return this._http.delete(this.baseUrl + '/' + id);
   }
 
-  updateRelation( relation: Relation) {
+  updateRelation(relation: Relation) {
     return this._http.put(this.baseUrl, relation, {
       headers: new HttpHeaders()
         .set('Content-Type', 'application/json')
     });
   }
+
+  uplodaRelation(formData: FormData) {
+    return this._http.post("http://localhost:5000/api/relation/upload", formData)
+      .map((response: Response) => {
+        return response;
+      }).catch(this.handleError);
+  }
+
+  private handleError(error: Response) {
+    console.error(error);
+    return Observable.throw(error|| 'Server error');
+  }
+
 }
