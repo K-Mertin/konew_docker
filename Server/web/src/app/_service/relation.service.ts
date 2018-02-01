@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Relation, RELATIONS, Party } from '../_model/Relation';
+import { Relation, Party } from '../_model/Relation';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
@@ -15,10 +15,6 @@ export class RelationService {
 
   private baseUrl = environment.apiUrl + '/relation';
 
-  getall(): Relation[] {
-    return RELATIONS;
-  }
-
   getAutoComplete(key: string, type: string): Observable<string[]> {
     return this._http
       .get<string[]>(this.baseUrl + '/key/' + type + '/' + key);
@@ -30,6 +26,7 @@ export class RelationService {
   }
 
   addRelation(relation: Relation) {
+    console.log(relation)
     return this._http.post(this.baseUrl, relation, {
       headers: new HttpHeaders()
         .set('Content-Type', 'application/form-data')

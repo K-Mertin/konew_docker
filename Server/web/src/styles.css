@@ -9,21 +9,32 @@
 } */
 
 .modal-title {
-    font-size: 2em;
-    font-weight: bold;
+  font-size: 2em;
+  font-weight: bold;
 }
 
 .input {
-    width: 200px;
-    border: none;
-    border-bottom: 1px solid black;
-  
-    padding: 0;
-    line-height: 24px;
-    font-size: 16px;
-    text-align: center
-  }
-  .input:focus {
-    outline: none;
-    border-bottom-color: blue;
-  }
+  width: 200px;
+  border: none;
+  border-bottom: 2px solid #efefef;
+
+  padding: 0;
+  line-height: 24px;
+  font-size: 16px;
+  text-align: center;
+}
+.input:focus {
+  outline: none;
+  border-bottom-color: blue;
+}
+::placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  font-family: "Roboto", "Helvetica Neue", sans-serif;
+  font-size: 18px;
+  color: gray;
+  text-align: center;
+}
+
+.ng2-dropdown-menu {
+  z-index: 9999 !important;
+}

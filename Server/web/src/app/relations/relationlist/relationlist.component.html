@@ -80,15 +80,22 @@
             <input class="input" type="text" placeholder="關係人/公司統編" formControlName="idNumber">
             <input class="input" type="text" placeholder="註記" formControlName="memo">
 
-            <angular2-multiselect [data]="dropdownList" [settings]="dropdownSettings" formControlName="relationType">
-            </angular2-multiselect>
+            <!-- <angular2-multiselect [data]="dropdownList" [settings]="dropdownSettings" formControlName="relationType">
+            </angular2-multiselect> -->
+
+            <tag-input formControlName="relationType" placeholder='+' secondaryPlaceholder='請輸入關係'>
+              <tag-input-dropdown [showDropdownIfEmpty]="true" [autocompleteItems]="autoCompleteList">
+              </tag-input-dropdown>
+            </tag-input>
+
+
             <div *ngIf="(relationForm.controls['objects'].controls[i].controls.idNumber.touched||relationForm.controls['objects'].controls[i].controls.name.touched) && relationForm.controls['objects'].controls[i].hasError('checkValidate')"
               class="alert alert-danger">
               姓名與統編須擇一輸入
             </div>
-            <div *ngIf="relationForm.controls['objects'].controls[i].controls.memo.touched && relationForm.controls['objects'].controls[i].hasError('checkMemo')"
+            <div *ngIf="relationForm.controls['objects'].controls[i].controls.relationType.touched && relationForm.controls['objects'].controls[i].controls.relationType.invalid"
               class="alert alert-danger">
-              請輸入關係註記
+              請輸入關係
             </div>
           </div>
         </div>

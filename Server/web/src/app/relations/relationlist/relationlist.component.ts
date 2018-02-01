@@ -4,6 +4,7 @@ import { AlertifyService } from '../../_service/alertify.service';
 import { RelationService } from '../../_service/relation.service';
 import { Relation } from '../../_model/Relation';
 import { environment } from '../../../environments/environment';
+import { RELATIONTYPE } from '../../_data/RelationType';
 
 @Component({
   selector: 'app-relationlist',
@@ -15,32 +16,13 @@ export class RelationlistComponent implements OnInit {
   private baseUrl = environment.apiUrl + '/relation';
   relationForm: FormGroup;
   relation: Relation;
-  dropdownList = [];
-  dropdownSettings = {};
   filePath: string;
+  autoCompleteList = RELATIONTYPE;
 
   constructor(private fb: FormBuilder, private alertify: AlertifyService, private relationService: RelationService) { }
 
   ngOnInit() {
     this.createRelationForm();
-    this.dropdownList = [
-      { 'id': 8, 'itemName': 'relateionType1' },
-      { 'id': 2, 'itemName': 'relateionType2' },
-      { 'id': 3, 'itemName': 'relateionType3' },
-      { 'id': 4, 'itemName': 'relateionType4' },
-      { 'id': 5, 'itemName': 'relateionType5' },
-      { 'id': 6, 'itemName': 'relateionType6' },
-      { 'id': 7, 'itemName': 'relateionType7' },
-      { 'id': 1, 'itemName': '其他' },
-
-    ];
-    this.dropdownSettings = {
-      singleSelection: false,
-      enableCheckAll: false,
-      text: '請選擇關係種類',
-      enableSearchFilter: false,
-      classes: 'relationTypeList'
-    };
   }
 
   createRelationForm() {
@@ -55,7 +37,7 @@ export class RelationlistComponent implements OnInit {
         idNumber: [''],
         relationType: [[], Validators.required],
         memo: ['']
-      }, { validator: Validators.compose([this.checkValidate('name', 'idNumber'), this.checkMemo('relationType', 'memo')]) })]),
+      }, { validator: this.checkValidate('name', 'idNumber') })]),
       reason: ['', Validators.required],
       user: ['', Validators.required]
     });
@@ -69,7 +51,7 @@ export class RelationlistComponent implements OnInit {
       idNumber: [''],
       relationType: [[], Validators.required],
       memo: ['']
-    }, { validator: Validators.compose([this.checkValidate('name', 'idNumber'), this.checkMemo('relationType', 'memo')]) }));
+    }, { validator: this.checkValidate('name', 'idNumber')}));
   }
 
   addSubject() {
@@ -93,13 +75,18 @@ export class RelationlistComponent implements OnInit {
 
     this.relation = Object.assign({}, this.relationForm.value);
 
+    this.relation.objects.forEach(object => {
+      object.relationType=object.relationType.map(r=>r.value);
+    });
+    
+
     this.relationService.addRelation(this.relation).subscribe(request => {
       this.alertify.success('relation created');
       this.clearForm()
     }, error => {
       this.alertify.error('failed');
     });
-    // console.log(this.relationForm.value);
+    // console.log(this.relation);
   }
 
 
@@ -116,19 +103,6 @@ export class RelationlistComponent implements OnInit {
         return {
           checkValidate: true
         };
-      }
-    }
-  }
-
-  checkMemo(relationType: string, memo: string) {
-    return (group: FormGroup): { [key: string]: any } => {
-      let r = group.controls[relationType];
-      let m = group.controls[memo];
-      if (r.value.map(e => e.itemName).includes('其他') && m.value.trim() === '') {
-        return {
-          checkMemo: true
-        };
-
       }
     }
   }

@@ -1,14 +1,14 @@
 <div class="container">
   <form action="" class="form-inline">
 
-    <select name="queryType" id="soflow" [(ngModel)]="queryType" class="selectpicker col-md-3">
-      <option value="idNumber" se>統編</option>
+    <select name="queryType" id="soflow" [(ngModel)]="queryType" class="selectpicker col-md-3" #query>
+      <option value="idNumber">統編</option>
       <option value="name">姓名</option>
       <option value="reason">原因</option>
     </select>
 
     <div class="autocomplete col-md-3">
-      <input list="suggest-list" class="input" type="search" id="search" autocomplete="off" [(ngModel)]="queryKey" name="queryKey"
+      <input placeholder="請輸入查詢關鍵字" list="suggest-list" class="input" type="search" id="search" autocomplete="off" [(ngModel)]="queryKey" name="queryKey"
         #input>
       <datalist id="suggest-list" class="suggest" #selected>
         <option *ngFor="let i of list">{{i}}</option>
@@ -63,7 +63,8 @@
             <tr>
               <th>關係人/公司統編</th>
               <th>關係人/公司名</th>
-              <th>關係註記</th>
+              <th>關係</th>
+              <th>註記</th>
             </tr>
           </thead>
           <tr *ngFor="let object of relation.objects">
@@ -71,9 +72,11 @@
             <td>{{object.name}}</td>
             <td>
             <div  *ngFor="let r of object.relationType">
-                <label class="label label-primary">{{r.itemName}}</label>
-                <label class="label label-default" *ngIf="r.itemName==='其他'">{{object.memo}}</label> 
+                <label class="label label-primary">{{r}}</label>
+                
             </div>
+          </td>
+          <td>{{object.memo}}
           </td>
           </tr>
         </table>

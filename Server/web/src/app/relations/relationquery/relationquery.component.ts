@@ -6,7 +6,7 @@ import {
   AfterViewInit
 } from '@angular/core';
 import { RelationService } from '../../_service/relation.service';
-import { Relation, RELATIONS } from '../../_model/Relation';
+import { Relation } from '../../_model/Relation';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromEvent';
 import { Subscription } from 'rxjs/Subscription';
