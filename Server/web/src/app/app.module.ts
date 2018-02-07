@@ -23,7 +23,6 @@ import { RelationlistComponent } from './relations/relationlist/relationlist.com
 import { RelationService } from './_service/relation.service';
 import { RelationqueryComponent } from './relations/relationquery/relationquery.component';
 import { RelationEditComponent } from './relations/relation-edit/relation-edit.component';
-import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown/angular2-multiselect-dropdown';
 import { TagInputModule } from 'ngx-chips';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // this is needed!
 
@@ -51,7 +50,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; 
     HttpClientModule,
     PaginationModule.forRoot(),
     ButtonsModule.forRoot(),
-    AngularMultiSelectModule,
     TagInputModule, 
     BrowserAnimationsModule
   ],
