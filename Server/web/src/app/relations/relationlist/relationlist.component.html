@@ -103,8 +103,8 @@
     </div>
   </form>
   <div class="button pull-right">
-    <button class="btn btn-danger" *ngIf="relationForm.touched" (click)="clearForm()">清除</button>
     <button class="btn btn-primary" *ngIf="!relationForm.invalid" (click)="addRelation()">新增</button>
+    <button class="btn btn-danger" *ngIf="relationForm.touched" (click)="clearForm()">清除</button>
   </div>
 
 

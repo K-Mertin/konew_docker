@@ -94,8 +94,8 @@
       </form>
     </div>
     <div class="modal-footer col-md-12">
-      <button type="button" class="btn btn-primary" *ngIf="relationForm.touched" (click)="setRelationForm()">復原</button>
       <button type="button" class="btn btn-primary" *ngIf="!relationForm.invalid" (click)="saveChange()">儲存異動</button>
+      <button type="button" class="btn btn-warning" *ngIf="relationForm.touched" (click)="setRelationForm()">復原</button>
       <button type="button" class="btn btn-secondary" data-dismiss="modal" #closeTag>關閉</button>
     </div>
   </div>

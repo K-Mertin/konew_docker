@@ -9,12 +9,13 @@ describe('RelationEditComponent', () => {
   let component: RelationEditComponent;
   let fixture: ComponentFixture<RelationEditComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ RelationEditComponent ]
+  beforeEach(
+    async(() => {
+      TestBed.configureTestingModule({
+        declarations: [RelationEditComponent]
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(RelationEditComponent);
