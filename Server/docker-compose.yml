@@ -5,7 +5,7 @@ service:
     - "8000"
   volumes:
     - /usr/src/app/
-    - ./Log:/usr/src/app/Log
+    - ./Log:/usr/src/app/log
   env_file: .env
   command: /usr/local/bin/gunicorn -w 2 -b :8000  FlaskService:app
 
