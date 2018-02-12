@@ -1,20 +1,23 @@
 batch_new:
   image: batch_batch
   volumes:
-    - ./Log:/usr/src/app/Log/
+    - /home/tester/konew_docker/Batch/log:/usr/src/app/log 
+    - /home/tester/konew_docker/Batch/data:/usr/src/app/data
   command: python lawbank.py NEW
   
 
 batch_mod:
   image: batch_batch
   volumes:
-    - ./Log:/usr/src/app/Log/
+    - /home/tester/konew_docker/Batch/data:/usr/src/app/data
+    - /home/tester/konew_docker/Batch/log:/usr/src/app/log 
   command: python lawbank.py MOD
   
 
 batch_fail:
   image: batch_batch
   volumes:
-    - ./Log:/usr/src/app/Log/
+    - /home/tester/konew_docker/Batch/log:/usr/src/app/log 
+    - /home/tester/konew_docker/Batch/data:/usr/src/app/data
   command: python lawbank.py FAIL
   
