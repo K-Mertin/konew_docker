@@ -1,0 +1,17 @@
+{
+  "list": [
+    {
+      "value": "new",
+      "display": "申請"
+    },
+    {
+      "value": "approved",
+      "display": "覆核"
+    },
+    {
+      "value": "finished",
+      "display": "到期"
+    }
+  ],
+  "map": { "new": "申請", "approved": "覆核", "finished": "結案", "deleted": "已刪除" }
+}

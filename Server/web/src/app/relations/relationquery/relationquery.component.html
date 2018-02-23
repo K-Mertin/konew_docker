@@ -8,8 +8,8 @@
     </select>
 
     <div class="autocomplete col-md-3">
-      <input placeholder="請輸入查詢關鍵字" list="suggest-list" class="input" type="search" id="search" autocomplete="off" [(ngModel)]="queryKey" name="queryKey"
-        #input>
+      <input placeholder="請輸入查詢關鍵字" list="suggest-list" class="input" type="search" id="search" autocomplete="off" [(ngModel)]="queryKey"
+        name="queryKey" #input>
       <datalist id="suggest-list" class="suggest" #selected>
         <option *ngFor="let i of list">{{i}}</option>
       </datalist>
@@ -24,76 +24,92 @@
         <label>登錄原因: </label>{{relation.reason}}
       </div>
       <div class="col-md-6">
-        <a class="btn btn-danger pull-right">
-          <i class="fa fa-trash-o" aria-hidden="true" (click)="deleteRelation(relation._id)"></i>
+        <a class="btn btn-warning pull-right" data-toggle="modal" data-target="#relationHistModal" (click)="getHistRelation(relation._id)">
+          <i class="fa fa-history" aria-hidden="true">歷程</i>
         </a>
         <a href="#" class="btn btn-success pull-right" data-toggle="modal" data-target="#relationEditModal" (click)="setEditRelation(relation)">
-          <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+          <i class="fa fa-pencil-square-o" aria-hidden="true">編輯</i>
         </a>
       </div>
       <div class="col-md-6">
         <table class="table table-striped ">
           <thead>
+            <th>
+              借款人:
+            </th>
             <tr>
-              <th>
-                借款人:
-              </th>
-            </tr>
-            <tr>
-              <th>負責人/公司統編</th>
-              <th>負責人/公司名</th>
+              <th>統編</th>
+              <th>姓名</th>
               <th>註記</th>
             </tr>
           </thead>
           <tr *ngFor="let subject of relation.subjects">
-            <td>{{subject.idNumber}} </td>
-            <td>{{subject.name}}</td>
-            <td> {{subject.memo}}</td>
+            <td>
+              <a class="btn btn-info" (click)="search(subject.idNumber, 'idNumber')">{{subject.idNumber}}</a>
+            </td>
+            <td>
+              <a class="btn btn-info" (click)="search(subject.name, 'name')">{{subject.name}}</a>
+            </td>
+            <td>
+              <ul>
+                <li *ngFor="let m of subject.memo">
+                  {{m}}
+                </li>
+              </ul>
+            </td>
           </tr>
         </table>
       </div>
       <div class="col-md-6">
         <table class="table table-striped ">
           <thead>
+            <th>
+              關係人:
+            </th>
             <tr>
-              <th>
-                關係人:
-              </th>
-            </tr>
-            <tr>
-              <th>關係人/公司統編</th>
-              <th>關係人/公司名</th>
+              <th>統編</th>
+              <th>姓名</th>
               <th>關係</th>
               <th>註記</th>
             </tr>
           </thead>
           <tr *ngFor="let object of relation.objects">
-            <td>{{object.idNumber}} </td>
-            <td>{{object.name}}</td>
             <td>
-            <div  *ngFor="let r of object.relationType">
-                <label class="label label-primary">{{r}}</label>
-                
-            </div>
-          </td>
-          <td>{{object.memo}}
-          </td>
+              <a class="btn btn-info" (click)="search(object.idNumber, 'idNumber')">{{object.idNumber}}</a>
+            </td>
+            <td>
+              <a class="btn btn-info" (click)="search(object.name, 'name')">{{object.name}}</a>
+            </td>
+            <td>
+              <ul>
+                <li *ngFor="let r of object.relationType">
+                  {{r}}
+                </li>
+              </ul>
+            </td>
+            <td>
+              <ul>
+                <li *ngFor="let m of object.memo">
+                  {{m}}
+                </li>
+              </ul>
+            </td>
           </tr>
         </table>
       </div>
-
-      <div class="col-md-3">
-        <label>建檔人員: </label>{{relation.createUser}}
-      </div>
-      <div class="col-md-3">
-        <label>建檔日期: </label>{{relation.createDate}}
-      </div>
-
-      <div class="col-md-3">
-        <label>最後修改人員: </label>{{relation.modifyUser}}
-      </div>
-      <div class="col-md-3">
-        <label>最後修改日期: </label>{{relation.modifyDate}}
+      <div class="col-md-12">
+        <div class="col-md-3">
+          <label>建檔人員: </label>{{relation.createUser}}
+        </div>
+        <div class="col-md-3">
+          <label>建檔日期: </label>{{relation.createDate| date: 'yyyy/MM/dd hh:mm:ss'}}
+        </div>
+        <div class="col-md-3">
+          <label>最後修改人員: </label>{{relation.modifyUser}}
+        </div>
+        <div class="col-md-3">
+          <label>最後修改日期: </label>{{relation.modifyDate| date: 'yyyy/MM/dd hh:mm:ss'}}
+        </div>
       </div>
     </div>
   </div>
@@ -103,5 +119,83 @@
     aria-hidden="true">
     <!-- <app-relation-edit [relationEdit]="relationEdit" [loadRelation]="theBoundCallback"></app-relation-edit> -->
     <app-relation-edit [relationEdit]="relationEdit" [search]="theBoundCallback"></app-relation-edit>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade col-md-12" id="relationHistModal" tabindex="-1" role="dialog" aria-labelledby="relationHistModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content col-md-12">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-1">
+              <div class="row">.</div>
+              <div class="row">異動</div>
+            </div>
+            <div class="col-md-3">
+              <div class="row">
+                <div class="col-md-12">借款人</div>
+              </div>
+              <div class="row">
+                <div class="col-md-4">統編</div>
+                <div class="col-md-4">姓名</div>
+                <div class="col-md-4">註記</div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-md-12">關係人</div>
+              </div>
+              <div class="row">
+                <div class="col-md-2">統編</div>
+                <div class="col-md-3">姓名</div>
+                <div class="col-md-4">關係</div>
+                <div class="col-md-3">註記</div>
+              </div>
+            </div>
+            <div class="col-md-1">
+              <div class="row">.</div>
+              <div class="row">修改日期</div>
+            </div>
+            <div class="col-md-1">
+              <div class="row">.</div>
+              <div class="row">修改人員</div>
+            </div>
+          </div>
+          <div class="row" *ngFor="let relation of relationHist">
+            <div class="col-md-1">{{relation.action}}</div>
+            <div class="col-md-3">
+              <div class="row" *ngFor="let subject of relation.subjects">
+                <div class="col-md-4">{{subject.idNumber}}</div>
+                <div class="col-md-4">{{subject.name}}</div>
+                <div class="col-md-4">
+                  <div *ngFor="let memo of subject.memo;let i = index">
+                    {{i+1}}.{{memo}}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="row" *ngFor="let object of relation.objects">
+                <div class="col-md-2">{{object.idNumber}}</div>
+                <div class="col-md-3">{{object.name}}</div>
+                <div class="col-md-4">
+                  <div *ngFor="let type of object.relationType;let i = index">
+                    {{i+1}}.{{type}}
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div *ngFor="let memo of object.memo;let i = index">
+                    {{i+1}}.{{memo}}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-1">{{relation.modifyDate|date :'yyyy-MM-dd HH:mm:ss'}}</div>
+            <div class="col-md-1">{{relation.modifyUser}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

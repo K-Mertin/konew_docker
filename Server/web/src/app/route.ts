@@ -7,16 +7,20 @@ import { SpiderResultResolver } from './_resolver/spider-result.resolver';
 import { SpiderHistoryResolver } from './_resolver/spider-history.rqsolver';
 import { RelationlistComponent } from './relations/relationlist/relationlist.component';
 import { RelationqueryComponent } from './relations/relationquery/relationquery.component';
+import { LoancasesComponent } from './loancases/loancases.component';
+import { LoancaseResolver } from './_resolver/loancase.resolver';
+import { LoanstatusResolver } from './_resolver/loanStatus.resolver';
 
 export const appRoutes: Routes = [
     { path: 'home', component: HomeComponent },
     { path: 'spider', component: SpiderRequestComponent },
     { path: 'spider/request', component: SpiderRequestComponent },
     { path: 'spider/result', component: SpiderResultComponent },
-    { path: 'spider/result/:requestId', component: SpiderResultComponent, resolve:{results: SpiderResultResolver } },
-    { path: 'spider/history', component: SpiderHistoryComponent, resolve:{requests: SpiderHistoryResolver } },
+    { path: 'spider/result/:requestId', component: SpiderResultComponent, resolve: {results: SpiderResultResolver } },
+    { path: 'spider/history', component: SpiderHistoryComponent, resolve: {requests: SpiderHistoryResolver } },
     { path: 'relation', component: RelationlistComponent },
     { path: 'relation/query', component: RelationqueryComponent },
+    { path: 'loancase' , component: LoancasesComponent, resolve: {loancases: LoancaseResolver, loanstatus: LoanstatusResolver }},
     // {
     //     path: '',
     //     runGuardsAndResolvers: 'always',

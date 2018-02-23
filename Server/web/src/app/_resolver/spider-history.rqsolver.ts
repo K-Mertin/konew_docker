@@ -10,20 +10,18 @@ import { SpiderRequest } from '../_model/SpiderRequest';
 
 @Injectable()
 export class SpiderHistoryResolver implements Resolve<SpiderRequest[]> {
-    pageSize = 10;
-    PageNumber = 1;
 
-    constructor(private service: DemoServiceService, private router: Router
-        , private alertify: AlertifyService) { }
+  constructor(
+    private service: DemoServiceService,
+    private router: Router,
+    private alertify: AlertifyService
+  ) {}
 
-    resolve(route: ActivatedRouteSnapshot): Observable<SpiderRequest[]> {
-
-        return this.service.getRequests().catch(error => {
-            this.alertify.error('problem retrieving data');
-            this.router.navigate(['/spider/history']);
-            return Observable.of(null);
-        }
-        )
-    }
-
+  resolve(route: ActivatedRouteSnapshot): Observable<SpiderRequest[]> {
+    return this.service.getRequests().catch(error => {
+      this.alertify.error('problem retrieving data');
+      this.router.navigate(['/spider/history']);
+      return Observable.of(null);
+    });
+  }
 }

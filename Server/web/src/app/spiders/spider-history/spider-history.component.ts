@@ -15,12 +15,21 @@ export class SpiderHistoryComponent implements OnInit {
   userParams: any = {};
   demoRequest: SpiderRequest[];
   requestEdit: SpiderRequest;
-  rowList = [{ value: 10, display: '10' }, { value: 20, display: '20' }, { value: 30, display: '30' }, { value: 50, display: '50' }, { value: 100, display: '100' }];
+  rowList = [
+    { value: 10, display: '10' },
+    { value: 20, display: '20' },
+    { value: 30, display: '30' },
+    { value: 50, display: '50' },
+    { value: 100, display: '100' }
+  ];
 
   public theBoundCallback: Function;
 
-
-  constructor(private service: DemoServiceService, private route: ActivatedRoute, private alertify: AlertifyService) { }
+  constructor(
+    private service: DemoServiceService,
+    private route: ActivatedRoute,
+    private alertify: AlertifyService
+  ) {}
 
   ngOnInit() {
     this.route.data.subscribe(data => {
@@ -37,13 +46,17 @@ export class SpiderHistoryComponent implements OnInit {
   }
 
   loadRequests() {
-    this.service.getRequests(this.pagination.pageNumber, this.pagination.pageSize)
-      .subscribe(data => {
-        this.demoRequest = data['data'];
-        this.pagination = data['pagination'];
-      }, error => {
-        this.alertify.error(error);
-      });
+    this.service
+      .getRequests(this.pagination.pageNumber, this.pagination.pageSize)
+      .subscribe(
+        data => {
+          this.demoRequest = data['data'];
+          this.pagination = data['pagination'];
+        },
+        error => {
+          this.alertify.error(error);
+        }
+      );
   }
 
   pageChanged(event: any): void {
@@ -51,16 +64,19 @@ export class SpiderHistoryComponent implements OnInit {
     this.loadRequests();
   }
 
-
   deleteRequest(request) {
     if (confirm('確定要刪除?(刪除後將無法取回資料)')) {
-      this.service.removeRquest(request).subscribe(() => {
-        this.alertify.success('Deleted');
-      }, error => {
-        this.alertify.error('failed to deleted');
-      }, () => {
-        this.loadRequests();
-      })
+      this.service.removeRquest(request).subscribe(
+        () => {
+          this.alertify.success('Deleted');
+        },
+        error => {
+          this.alertify.error('failed to deleted');
+        },
+        () => {
+          this.loadRequests();
+        }
+      );
     }
     // this.service.removeRquest()
   }
@@ -80,7 +96,5 @@ export class SpiderHistoryComponent implements OnInit {
       default:
         return 'info';
     }
-
   }
-
 }
