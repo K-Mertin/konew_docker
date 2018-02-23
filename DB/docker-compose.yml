@@ -9,5 +9,6 @@ services:
     ports:
       - "37017:27017"
     volumes:
-      - /data/db
-      - ./konewdb:/data/backup
+      - /home/tester/mongodb/konewdb/db:/data/db
+      - /home/tester/mongodb/konewdb/configdb:/data/configdb
+      - /home/tester/mongodb/backup:/data/backup
