@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { PaginationModule, ButtonsModule } from 'ngx-bootstrap';
-
+import { PaginationModule, ButtonsModule, BsDatepickerModule } from 'ngx-bootstrap';
+import { TagInputModule } from 'ngx-chips';
 import { AppComponent } from './app.component';
 import { DemoServiceService } from './_service/demoService.service';
 import { HttpModule } from '@angular/http/';
@@ -14,7 +14,7 @@ import { RouterModule } from '@angular/router';
 import { appRoutes } from './route';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { AlertifyService } from './_service/alertify.service'
+import { AlertifyService } from './_service/alertify.service';
 import { SpiderResultResolver } from './_resolver/spider-result.resolver';
 import { RequestEditComponent } from './spiders/request-edit/request-edit.component';
 import { RequestCreateComponent } from './spiders/request-create/request-create.component';
@@ -23,9 +23,13 @@ import { RelationlistComponent } from './relations/relationlist/relationlist.com
 import { RelationService } from './_service/relation.service';
 import { RelationqueryComponent } from './relations/relationquery/relationquery.component';
 import { RelationEditComponent } from './relations/relation-edit/relation-edit.component';
-import { TagInputModule } from 'ngx-chips';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // this is needed!
-
+import { LoancasesComponent } from './loancases/loancases.component';
+import { LoancaseEditComponent } from './loancases/loancase-edit/loancase-edit.component';
+import { CommonService } from './_service/common.service';
+import { LoancaseService } from './_service/loancase.service';
+import { LoancaseResolver } from './_resolver/loancase.resolver';
+import { LoanstatusResolver } from './_resolver/loanStatus.resolver';
 
 @NgModule({
   declarations: [
@@ -39,7 +43,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; 
     RequestCreateComponent,
     RelationlistComponent,
     RelationqueryComponent,
-    RelationEditComponent
+    RelationEditComponent,
+    LoancasesComponent,
+    LoancaseEditComponent
 ],
   imports: [
     BrowserModule,
@@ -50,16 +56,21 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; 
     HttpClientModule,
     PaginationModule.forRoot(),
     ButtonsModule.forRoot(),
-    TagInputModule, 
-    BrowserAnimationsModule
+    TagInputModule,
+    BrowserAnimationsModule,
+    BsDatepickerModule.forRoot()
   ],
   providers: [
     DemoServiceService,
     AlertifyService,
     SpiderResultResolver,
     SpiderHistoryResolver,
-    RelationService
+    RelationService,
+    CommonService,
+    LoancaseService,
+    LoancaseResolver,
+    LoanstatusResolver
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

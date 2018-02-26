@@ -11,8 +11,8 @@ import { environment } from '../environments/environment';
 export class AppComponent {
   title = 'konew';
 
-  constructor() {console.log(environment.production);
-  console.log(environment.apiUrl)}
-
-
+  constructor() {
+    console.log(environment.production);
+    console.log(environment.apiUrl);
+  }
 }

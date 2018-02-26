@@ -1,7 +1,7 @@
 version: '2'
 services:
   konewdb:
-    # restart: always
+    restart: always
     build: ./konewdb
 
     command: [--auth]

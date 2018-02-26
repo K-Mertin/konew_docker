@@ -1,0 +1,20 @@
+batch_new:
+  image: batch_batch
+  volumes:
+    - ./Log:/usr/src/app/Log/
+  command: python lawbank.py NEW
+  
+
+batch_mod:
+  image: batch_batch
+  volumes:
+    - ./Log:/usr/src/app/Log/
+  command: python lawbank.py MOD
+  
+
+batch_fail:
+  image: batch_batch
+  volumes:
+    - ./Log:/usr/src/app/Log/
+  command: python lawbank.py FAIL
+  

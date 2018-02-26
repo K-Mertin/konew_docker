@@ -48,9 +48,11 @@ export class RequestEditComponent implements OnInit, OnChanges {
 
   setRequestForm() {
     this.createRegisterForm();
+    // tslint:disable-next-line:forin
     for (let key in this.requestEdit['searchKeys']) {
       (<FormArray>this.requestForm.controls['searchKeys']).push(new FormControl(this.requestEdit['searchKeys'][key]));
     }
+    // tslint:disable-next-line:forin
     for (let key in this.requestEdit['referenceKeys']) {
       (<FormArray>this.requestForm.controls['referenceKeys']).push(new FormControl(this.requestEdit['referenceKeys'][key]));
     }

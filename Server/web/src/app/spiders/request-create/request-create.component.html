@@ -24,7 +24,7 @@
           </a>
         </div>
         <div formArrayName="searchKeys">
-          <div *ngFor="let searchKey of requestForm.controls['searchKeys'].controls; let i=index" class="col-md-6">
+          <div *ngFor="let searchKey of requestForm.controls['searchKeys']['controls']; let i=index" class="col-md-6">
             <h4>
               <label class="label label-primary">{{searchKey.value}}</label>
               <a class="label label-danger pull-right" *ngIf="requestForm.controls['searchKeys'].controls.length > 0" (click)="removeSearchKey(i)">
@@ -43,7 +43,7 @@
         </div>
 
         <div formArrayName="referenceKeys">
-          <div *ngFor="let referenceKey of requestForm.controls['referenceKeys'].controls; let i=index" class="col-md-6">
+          <div *ngFor="let referenceKey of requestForm.controls['referenceKeys']['controls']; let i=index" class="col-md-6">
             <h4>
               <label class="label label-info ">{{referenceKey.value}}</label>
               <a class="label label-danger pull-right" *ngIf="requestForm.controls['referenceKeys'].controls.length > 0" (click)="removeReferenceKey(i)">

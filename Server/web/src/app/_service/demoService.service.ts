@@ -13,21 +13,24 @@ import { environment } from '../../environments/environment';
 export class DemoServiceService {
   private demoData = '/assets/demoData.json';
   private demoRequest = '/assets/demoRequestData.json';
-  constructor(private _http: HttpClient) { }
+  constructor(private _http: HttpClient) {}
 
-  private baseUrl = environment.apiUrl;
+  private baseUrl = environment.apiUrl + '/requests';
 
   getDemo(): Observable<DemoModel[]> {
-    return this._http
-      .get<DemoModel[]>(this.demoData);
+    return this._http.get<DemoModel[]>(this.demoData);
   }
 
   getDemoRequest(): Observable<SpiderRequest[]> {
-    return this._http
-      .get<SpiderRequest[]>(this.demoRequest);
+    return this._http.get<SpiderRequest[]>(this.demoRequest);
   }
 
-  getRequestResult(requestId, pageNumber?, pageSize?, userParams?: any): Observable<SpiderResult[]> {
+  getRequestResult(
+    requestId,
+    pageNumber?,
+    pageSize?,
+    userParams?: any
+  ): Observable<SpiderResult[]> {
     let params = new HttpParams();
 
     if (pageNumber != null && pageSize != null) {
@@ -38,15 +41,16 @@ export class DemoServiceService {
     if (userParams != null) {
       params = params.append('sortBy', userParams.sortBy);
       if (userParams.filters.length > 0) {
-
         userParams.filters.forEach(element => {
           params = params.append('filters', element);
         });
       }
     }
 
-
-    return this._http.get<SpiderResult[]>(this.baseUrl + '/documents/' + requestId, { params });
+    return this._http.get<SpiderResult[]>(
+      this.baseUrl + '/documents/' + requestId,
+      { params }
+    );
   }
 
   getRequests(pageNumber?, pageSize?): Observable<SpiderRequest[]> {
@@ -57,28 +61,24 @@ export class DemoServiceService {
       params = params.append('pageSize', pageSize);
     }
 
-    return this._http.get<SpiderRequest[]>(this.baseUrl + '/requests', { params });
+    return this._http.get<SpiderRequest[]>(this.baseUrl + '/list', { params });
   }
 
   addRequests(requests: SpiderRequest) {
-    return this._http.post(this.baseUrl + '/requests', requests, {
-      headers: new HttpHeaders()
-        .set('Content-Type', 'application/json')
+    return this._http.post(this.baseUrl + '/add', requests, {
+      headers: new HttpHeaders().set('Content-Type', 'application/json')
     });
   }
 
   updateReqest(requests: SpiderRequest) {
-    return this._http.put(this.baseUrl + '/requests', requests, {
-      headers: new HttpHeaders()
-        .set('Content-Type', 'application/json')
+    return this._http.put(this.baseUrl + '/update', requests, {
+      headers: new HttpHeaders().set('Content-Type', 'application/json')
     });
   }
 
   removeRquest(requests: SpiderRequest) {
-    return this._http.put(this.baseUrl + '/requests/delete', requests, {
-      headers: new HttpHeaders()
-        .set('Content-Type', 'application/json')
+    return this._http.put(this.baseUrl + '/delete', requests, {
+      headers: new HttpHeaders().set('Content-Type', 'application/json')
     });
   }
-
 }

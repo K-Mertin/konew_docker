@@ -8,8 +8,7 @@ import {
 } from '@angular/forms';
 import { SpiderRequest } from '../../_model/SpiderRequest';
 import { DemoServiceService } from '../../_service/demoService.service';
-import { AlertifyService } from '../../_service/alertify.service'
-
+import { AlertifyService } from '../../_service/alertify.service';
 
 @Component({
   selector: 'app-spider-request',
@@ -17,16 +16,19 @@ import { AlertifyService } from '../../_service/alertify.service'
   styleUrls: ['./spider-request.component.css']
 })
 export class SpiderRequestComponent implements OnInit {
-  @Input() public loadRequest: Function
-  
+  @Input() public loadRequest: Function;
+
   requestForm: FormGroup;
   requestTypes = [{ value: 'lawbank', display: '法源網' }];
   iSearchKey = '';
   iReferenceKey = '';
   request: SpiderRequest;
 
-
-  constructor(private fb: FormBuilder, private alertify: AlertifyService, private service: DemoServiceService) { }
+  constructor(
+    private fb: FormBuilder,
+    private alertify: AlertifyService,
+    private service: DemoServiceService
+  ) {}
 
   ngOnInit() {
     this.createRegisterForm();
@@ -35,13 +37,15 @@ export class SpiderRequestComponent implements OnInit {
   submit() {
     this.request = Object.assign({}, this.requestForm.value);
 
-    this.service.addRequests(this.request).subscribe(() => {
-      this.alertify.success('requests created')
-      this.createRegisterForm()
-
-    }, error => {
-      console.log(error);
-    });
+    this.service.addRequests(this.request).subscribe(
+      () => {
+        this.alertify.success('requests created');
+        this.createRegisterForm();
+      },
+      error => {
+        console.log(error);
+      }
+    );
   }
 
   createRegisterForm() {
@@ -78,7 +82,6 @@ export class SpiderRequestComponent implements OnInit {
       control.push(new FormControl(this.iReferenceKey));
       this.iReferenceKey = '';
     }
-
   }
 
   removeReferenceKey(i: number) {

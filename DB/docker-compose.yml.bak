@@ -1,0 +1,13 @@
+version: '2'
+services:
+  konewdb:
+    restart: always
+    build: ./konewdb
+
+    command: [--auth]
+
+    ports:
+      - "37017:27017"
+    volumes:
+      - /data/db
+      - ./konewdb:/data/backup
