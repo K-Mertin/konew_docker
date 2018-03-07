@@ -1,7 +1,7 @@
 <div class="container">
   <form class="form-inline">
     <select name="queryType" id="soflow" [(ngModel)]="queryType" class="selectpicker" #query>
-      <option value="idNumber">統編</option>
+      <option value="idNumber">ID</option>
       <option value="name">申請人</option>
     </select>
     <div class="autocomplete">
@@ -38,12 +38,12 @@
         </th>
       </tr>
       <tr>
-        <th>統編</th>
+        <th>ID</th>
         <th>申請人</th>
         <th>貸款狀態</th>
         <th>連絡人</th>
         <th>申請日</th>
-        <th>業務人員</th>
+        <th>營業員</th>
         <th>拜訪日期</th>
         <th>回覆日期</th>
         <th>票信查詢</th>
@@ -97,12 +97,12 @@
             <thead>
               <tr>
                 <th>異動</th>
-                <th>統編</th>
+                <th>ID</th>
                 <th>申請人</th>
-                <th>貸款狀態</th>
+                <!-- <th>貸款狀態</th> -->
                 <th>連絡人</th>
                 <th>申請日</th>
-                <th>業務人員</th>
+                <th>營業員</th>
                 <th>拜訪日期</th>
                 <th>回覆日期</th>
                 <th>票信查詢</th>
@@ -112,10 +112,10 @@
             </thead>
             <tbody>
               <tr *ngFor="let his of loancaseHist">
-                <td>{{his.action}}</td>
+                <td>{{statusMap[his.action]}}</td>
                 <td>{{his.idNumber}}</td>
                 <td>{{his.name}}</td>
-                <td>{{loanStatusMap[his.status]}}</td>
+                <!-- <td>{{loanStatusMap[his.status]}}</td> -->
                 <td>{{his.contactor}}</td>
                 <td>{{his.applyDate|date:'yyyy-MM-dd'}}</td>
                 <td>{{his.sales}}</td>

@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { PaginationModule, ButtonsModule, BsDatepickerModule } from 'ngx-bootstrap';
-import { TagInputModule } from 'ngx-chips';
+
 import { AppComponent } from './app.component';
 import { DemoServiceService } from './_service/demoService.service';
 import { HttpModule } from '@angular/http/';
@@ -23,6 +23,7 @@ import { RelationlistComponent } from './relations/relationlist/relationlist.com
 import { RelationService } from './_service/relation.service';
 import { RelationqueryComponent } from './relations/relationquery/relationquery.component';
 import { RelationEditComponent } from './relations/relation-edit/relation-edit.component';
+import { TagInputModule } from 'ngx-chips';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // this is needed!
 import { LoancasesComponent } from './loancases/loancases.component';
 import { LoancaseEditComponent } from './loancases/loancase-edit/loancase-edit.component';
@@ -30,6 +31,26 @@ import { CommonService } from './_service/common.service';
 import { LoancaseService } from './_service/loancase.service';
 import { LoancaseResolver } from './_resolver/loancase.resolver';
 import { LoanstatusResolver } from './_resolver/loanStatus.resolver';
+import { StatusResolver } from './_resolver/status.resolver';
+import { NetworkGraphicComponent } from './relations/network-graphic/network-graphic.component';
+
+import { NvD3Module } from 'ng2-nvd3';
+import { AuthService } from './_service/auth.service';
+
+import { JwtModule } from '@auth0/angular-jwt';
+import { AuthGuard } from './_guard/auth.guard';
+import { SettingComponent } from './setting/setting.component';
+
+import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
+// this includes the core NgIdleModule but includes keepalive providers for easy wireup
+import { MomentModule } from 'angular2-moment'; // optional, provides moment-style pipes for date formatting
+
+export function getAccessToken() { return localStorage.getItem('token'); }
+export const jwtConfig = {
+  tokenGetter: getAccessToken,
+  whitelistedDomains: ['localhost:5000']
+};
+
 
 @NgModule({
   declarations: [
@@ -45,7 +66,10 @@ import { LoanstatusResolver } from './_resolver/loanStatus.resolver';
     RelationqueryComponent,
     RelationEditComponent,
     LoancasesComponent,
-    LoancaseEditComponent
+    LoancaseEditComponent,
+    NetworkGraphicComponent
+,
+    SettingComponent
 ],
   imports: [
     BrowserModule,
@@ -58,18 +82,27 @@ import { LoanstatusResolver } from './_resolver/loanStatus.resolver';
     ButtonsModule.forRoot(),
     TagInputModule,
     BrowserAnimationsModule,
-    BsDatepickerModule.forRoot()
+    BsDatepickerModule.forRoot(),
+    NvD3Module,
+    JwtModule.forRoot({
+      config: jwtConfig
+    }),
+    MomentModule,
+    NgIdleKeepaliveModule.forRoot()
   ],
   providers: [
     DemoServiceService,
     AlertifyService,
+    AuthGuard,
     SpiderResultResolver,
     SpiderHistoryResolver,
     RelationService,
     CommonService,
     LoancaseService,
     LoancaseResolver,
-    LoanstatusResolver
+    LoanstatusResolver,
+    StatusResolver,
+    AuthService
   ],
   bootstrap: [AppComponent]
 })

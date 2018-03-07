@@ -42,7 +42,7 @@ export class RelationService {
 
   uplodaRelation(formData: FormData) {
     return this._http
-      .post('http://localhost:5000/api/relation/upload', formData)
+      .post(this.baseUrl + '/upload', formData)
       .map((response: Response) => {
         return response;
       })
@@ -56,5 +56,13 @@ export class RelationService {
 
   getHistRelations(id: string) {
     return this._http.get<number>(this.baseUrl + '/log/' + id);
+  }
+
+  getNetwork(id: string) {
+    return this._http.get(this.baseUrl + '/network/' + id);
+  }
+
+  checkDuplicate(target: string, id: string) {
+    return this._http.get<number>(this.baseUrl + '/check/' + target + '/' + id);
   }
 }

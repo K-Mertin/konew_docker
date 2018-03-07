@@ -1,6 +1,49 @@
-<div class="container">
- <div class="panel panel-default">
-   <h1 class="text-center">Welcome
-   </h1>
- </div>
+<div *ngIf="!registerMode" style="text-align:center">
+  <h1 class="text-center text-primary">
+    <b>
+      作業輔助系統
+    </b>
+  </h1>
+  <p>Beta version 2.0</p>
+  <div class="text-center" *ngIf="!loggedIn() && allowRegister">
+    <button class="btn btn-primary btn-lg" (click)="registerToggle()">Register</button>
+  </div>
+</div>
+
+<div *ngIf="registerMode"  class="container">
+  <div class="col-md-4 col-md-offset-4">
+    <!-- <form #registerFrom="ngForm" (ngSubmit)="register()"> -->
+    <h2 class="text-center text-primary">
+      <b>
+        註冊
+      </b>
+    </h2>
+    <form #registerForm="ngForm" (ngSubmit)="register()">
+      <div class="form-group">
+        <label>帳號：</label>
+        <input type="text" #username="ngModel" placeholder="帳號" class="form-control" required name="username" [(ngModel)]="registerModel.username">
+      </div>
+      <div class="form-group">
+        <label>密碼：</label>
+        <input type="password" #password="ngModel" placeholder="密碼" class="form-control" required name="password" [(ngModel)]="registerModel.password">
+      </div>
+      <div class="form-group">
+        <label>密碼確認：</label>
+        <input type="password" #againPassword="ngModel" placeholder="密碼確認" class="form-control" required name="againPassword" [(ngModel)]="registerModel.againPassword">
+      </div>
+      <div class="form-group">
+        <label>角色：</label>
+        <select  #role="ngModel" class="form-control" required name="role"  [(ngModel)]="registerModel.role">
+          <option *ngFor="let role of roleList" value="{{role.value}}">{{role.display}}</option>
+        </select>
+      </div>
+      <div *ngIf="password.value != againPassword.value && (password.touched || againPassword.touched)" class="alert alert-danger">兩次密碼不一樣</div>
+      <div class="form-group text-center">
+        <button class="btn btn-success"  [disabled]="!registerForm.valid"  type="submit">Register</button>
+        <button class="btn btn-default" type="button" (click)="cancel()">Cancel</button>
+      </div>
+    </form>
+
+
+  </div>
 </div>

@@ -2,8 +2,8 @@
   <form action="" class="form-inline">
 
     <select name="queryType" id="soflow" [(ngModel)]="queryType" class="selectpicker col-md-3" #query>
-      <option value="idNumber">統編</option>
-      <option value="name">姓名</option>
+      <option value="idNumber">ID</option>
+      <option value="name">名稱</option>
       <option value="reason">原因</option>
     </select>
 
@@ -16,14 +16,19 @@
     </div>
     <div class="col-md-3">
       <button class="btn btn-primary" style="margin: 20px" (click)="search()">查詢</button>
+      <button *ngIf="queryType =='idNumber'" style="margin: 20px" class="btn btn-success" data-toggle="modal" data-target="#networkModal" (click)="setNetworkIdNumver(queryKey)">
+        關聯圖
+      </button>
     </div>
   </form>
   <div class="col-md-12">
     <div *ngFor="let relation of relations">
       <div class="col-md-6">
+        <label class="label label-danger" *ngIf="relation.status=='deleted'">{{relation.status}}</label>
         <label>登錄原因: </label>{{relation.reason}}
       </div>
       <div class="col-md-6">
+
         <a class="btn btn-warning pull-right" data-toggle="modal" data-target="#relationHistModal" (click)="getHistRelation(relation._id)">
           <i class="fa fa-history" aria-hidden="true">歷程</i>
         </a>
@@ -35,12 +40,12 @@
         <table class="table table-striped ">
           <thead>
             <th>
-              借款人:
+              借戶主體:
             </th>
             <tr>
-              <th>統編</th>
-              <th>姓名</th>
-              <th>註記</th>
+              <th>ID</th>
+              <th>名稱</th>
+              <th>備註</th>
             </tr>
           </thead>
           <tr *ngFor="let subject of relation.subjects">
@@ -67,10 +72,10 @@
               關係人:
             </th>
             <tr>
-              <th>統編</th>
-              <th>姓名</th>
+              <th>ID</th>
+              <th>名稱</th>
               <th>關係</th>
-              <th>註記</th>
+              <th>備註</th>
             </tr>
           </thead>
           <tr *ngFor="let object of relation.objects">
@@ -114,11 +119,17 @@
     </div>
   </div>
 
+
   <!-- Modal -->
   <div class="modal fade col-md-12" id="relationEditModal" tabindex="-1" role="dialog" aria-labelledby="relationEditModalLabel"
     aria-hidden="true">
     <!-- <app-relation-edit [relationEdit]="relationEdit" [loadRelation]="theBoundCallback"></app-relation-edit> -->
     <app-relation-edit [relationEdit]="relationEdit" [search]="theBoundCallback"></app-relation-edit>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade col-md-12" id="networkModal" tabindex="-1" role="dialog" aria-labelledby="networkModalLabel" aria-hidden="true">
+    <app-network-graphic [networkIdNumber]="networkIdNumber"></app-network-graphic>
   </div>
 
   <!-- Modal -->
@@ -134,12 +145,12 @@
             </div>
             <div class="col-md-3">
               <div class="row">
-                <div class="col-md-12">借款人</div>
+                <div class="col-md-12">借戶主體</div>
               </div>
               <div class="row">
-                <div class="col-md-4">統編</div>
-                <div class="col-md-4">姓名</div>
-                <div class="col-md-4">註記</div>
+                <div class="col-md-4">ID</div>
+                <div class="col-md-4">名稱</div>
+                <div class="col-md-4">備註</div>
               </div>
             </div>
             <div class="col-md-6">
@@ -147,10 +158,10 @@
                 <div class="col-md-12">關係人</div>
               </div>
               <div class="row">
-                <div class="col-md-2">統編</div>
-                <div class="col-md-3">姓名</div>
+                <div class="col-md-2">ID</div>
+                <div class="col-md-3">名稱</div>
                 <div class="col-md-4">關係</div>
-                <div class="col-md-3">註記</div>
+                <div class="col-md-3">備註</div>
               </div>
             </div>
             <div class="col-md-1">
@@ -163,7 +174,7 @@
             </div>
           </div>
           <div class="row" *ngFor="let relation of relationHist">
-            <div class="col-md-1">{{relation.action}}</div>
+            <div class="col-md-1">{{statusMap[relation.action]}}</div>
             <div class="col-md-3">
               <div class="row" *ngFor="let subject of relation.subjects">
                 <div class="col-md-4">{{subject.idNumber}}</div>

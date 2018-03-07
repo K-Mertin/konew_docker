@@ -10,6 +10,7 @@ export interface Relation {
     reason: string;
     subjects: Party[];
     objects: Party[];
+    status: string;
     createDate: Date;
     createUser: string;
     modifyDate: Date;

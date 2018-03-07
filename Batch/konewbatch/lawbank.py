@@ -1,5 +1,5 @@
 from Crawler import Crawler
-from DataAccess import DataAccess
+from dataAccess.requestAccess import requestAccess
 from Logger import Logger
 import re, math
 import time, os
@@ -495,7 +495,7 @@ def main():
     logger.logger.info('start process')
 
     try:
-        dataAccess = DataAccess()
+        dataAccess = requestAccess()
         crawler = Crawler()
         parser = LawBankParser(crawler.driver, dataAccess, logger)
     except Exception as e:

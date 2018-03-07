@@ -24,6 +24,8 @@ import { zhCn } from 'ngx-bootstrap/locale';
 import { LoancaseService } from '../../_service/loancase.service';
 import { AlertifyService } from '../../_service/alertify.service';
 import { Observable } from 'rxjs/Observable';
+import { RelationService } from '../../_service/relation.service';
+import { AuthService } from '../../_service/auth.service';
 
 @Component({
   selector: 'app-loancase-edit',
@@ -35,14 +37,15 @@ export class LoancaseEditComponent implements OnInit {
   @Input() public search: Function;
   @ViewChild('closeTag') closeTag: ElementRef;
 
-
   newState = true;
 
   loancaseForm: FormGroup;
 
   loanStatusList;
 
-  alertMessage;
+  duplicateMessage;
+
+  relationMessage;
 
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
 
@@ -51,7 +54,9 @@ export class LoancaseEditComponent implements OnInit {
     private commonService: CommonService,
     private _localeService: BsLocaleService,
     private service: LoancaseService,
-    private alertify: AlertifyService
+    private alertify: AlertifyService,
+    private relationService: RelationService,
+    private authService: AuthService
   ) {
     defineLocale('zh_cn', zhCn);
     this.dpConfig.containerClass = 'theme-blue';
@@ -61,11 +66,9 @@ export class LoancaseEditComponent implements OnInit {
 
   ngOnInit() {
     this.createLoancaseForm();
-    this.commonService
-      .getLoanStatus()
-      .subscribe(r => {
-        this.loanStatusList = r.list;
-      });
+    this.commonService.getLoanStatus().subscribe(r => {
+      this.loanStatusList = r.list;
+    });
   }
 
   // tslint:disable-next-line:use-life-cycle-interface
@@ -85,22 +88,28 @@ export class LoancaseEditComponent implements OnInit {
     this.loancaseForm = this.fb.group({
       idNumber: [
         '',
-        [Validators.required, Validators.minLength(8)],
+        [Validators.required, Validators.minLength(8)]
         // this.validateidNumberTaken.bind(this)
       ],
       name: [
         '',
-        Validators.required,
-         // this.validatenameTaken.bind(this)
-        ],
+        Validators.required
+        // this.validatenameTaken.bind(this)
+      ],
       status: ['new', Validators.required],
       applyDate: [null, Validators.required],
       contactor: ['', Validators.required],
-      sales: ['', Validators.required],
+      sales: [
+        { value: this.authService.currentUser, disabled: true },
+        Validators.required
+      ],
       ticketCredit: [''],
       salesVisitDate: [null],
       lastReplyDate: [null],
-      user: ['', Validators.required]
+      user: [
+        { value: this.authService.currentUser, disabled: true },
+        Validators.required
+      ]
     });
   }
 
@@ -128,9 +137,9 @@ export class LoancaseEditComponent implements OnInit {
   }
 
   addLoancase() {
-    console.log(this.loancaseForm.value);
+    console.log(this.loancaseForm.getRawValue());
 
-    const loancase = Object.assign({}, this.loancaseForm.value);
+    const loancase = Object.assign({}, this.loancaseForm.getRawValue());
 
     this.service.addLoancase(loancase).subscribe(
       () => {
@@ -149,12 +158,12 @@ export class LoancaseEditComponent implements OnInit {
   }
 
   saveChange() {
-    console.log(this.loancaseForm.value);
+    console.log(this.loancaseForm.getRawValue());
 
     this.loancaseEdit = Object.assign(
       {},
       this.loancaseEdit,
-      this.loancaseForm.value
+      this.loancaseForm.getRawValue()
     );
     console.log(this.loancaseEdit);
 
@@ -173,12 +182,12 @@ export class LoancaseEditComponent implements OnInit {
   }
 
   delete() {
-    console.log(this.loancaseForm.value);
+    console.log(this.loancaseForm.getRawValue());
 
     this.loancaseEdit = Object.assign(
       {},
       this.loancaseEdit,
-      this.loancaseForm.value
+      this.loancaseForm.getRawValue()
     );
     console.log(this.loancaseEdit);
 
@@ -208,15 +217,35 @@ export class LoancaseEditComponent implements OnInit {
     });
   }
 
-  checkDuplicate(evnet) {
+  checkDuplicate(event) {
     const value = event.target['value'];
     const name = event.target['name'];
 
-    if ( event.target['value'].length > 0) {
-      this.service
-      .checkDuplicate(value, name)
-      .subscribe(res => {
-        this.alertMessage = res > 0 ? value + ' 已有進行中案件，請進行確認。' : null;
+    if (event.target['value'].trim().length > 0) {
+      this.service.checkDuplicate(value, name).subscribe(res => {
+        this.duplicateMessage =
+          res > 0 ? value + ' 已有進行中案件，請進行確認。' : null;
+      });
+
+      this.relationService.search(value, name).subscribe(res => {
+        let message = '';
+        if (res.length > 0) {
+          res.forEach(element => {
+            message +=   element.subjects[0].name + '因 "' + element.reason + '" 被登錄於關係人資料中。';
+            if (element.subjects[0].idNumber !== value) {
+              message += value + '為其關係人，關係為';
+              element.objects.forEach(object => {
+                if (object.idNumber === value) {
+                  object.relationType.forEach(relation => {
+                    message += '"' + relation + '"';
+                  });
+                }
+              });
+            }
+          });
+        }
+        this.relationMessage =
+          res.length > 0 ? message : null;
       });
     }
   }

@@ -27,6 +27,7 @@ export class LoancasesComponent implements OnInit {
   keylist = [];
   subscription: Subscription[];
   loanStatusMap;
+  statusMap;
 
   public theBoundCallback: Function;
 
@@ -44,6 +45,7 @@ export class LoancasesComponent implements OnInit {
       this.loancases = data['loancases']['data'];
       this.pagination = data['loancases']['pagination'];
       this.loanStatusMap = data['loanstatus'].map;
+      this.statusMap = data['status'].map;
     });
 
     this.theBoundCallback = this.search.bind(this);

@@ -14,6 +14,7 @@ import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/debounceTime';
 import { AlertifyService } from '../../_service/alertify.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-relationquery',
@@ -31,16 +32,23 @@ export class RelationqueryComponent implements OnInit {
   subscription: Subscription[];
   relationEdit: Relation;
   relationHist;
+  statusMap;
+  networkIdNumber;
 
   public theBoundCallback: Function;
 
   constructor(
     private relationService: RelationService,
     private alertify: AlertifyService,
-    private element: ElementRef
+    private element: ElementRef,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
+    this.route.data.subscribe(data => {
+      this.statusMap = data['status'].map;
+    });
+
     this.theBoundCallback = this.search.bind(this);
   }
 
@@ -52,20 +60,23 @@ export class RelationqueryComponent implements OnInit {
   search(key?: string, type?: string) {
     if (key) {
       this.queryKey = key;
+    }
+    if (type) {
       this.queryType = type;
     }
+
     this.relationService
       .search(this.queryKey, this.queryType)
       .subscribe(relations => (this.relations = relations));
-    console.log(this.relations);
+  
+    // console.log(this.relations);
   }
 
   filterEnterEvent() {
     // console.log(this.element.nativeElement);
     // this.list = [];
-
     return Observable.fromEvent(this.input.nativeElement, 'input')
-      .filter(e => e['target'].value.length > 0)
+      .filter(e => e['target'].value.trim().length > 0)
       .do(v => (this.list = []))
       .debounceTime(500)
       .switchMap(e =>
@@ -96,10 +107,12 @@ export class RelationqueryComponent implements OnInit {
     this.relationEdit = relation;
   }
   getHistRelation(id: string) {
-    this.relationService.getHistRelations(id)
-      .subscribe( data => {
-        this.relationHist = data;
-      }
-      );
+    this.relationService.getHistRelations(id).subscribe(data => {
+      this.relationHist = data;
+    });
+  }
+
+  setNetworkIdNumver(id: string) {
+    this.networkIdNumber = id;
   }
 }

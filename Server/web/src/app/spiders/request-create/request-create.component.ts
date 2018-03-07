@@ -4,6 +4,7 @@ import {  FormGroup,  FormBuilder,  FormControl,  Validators,  FormArray} from '
 import { AlertifyService } from '../../_service/alertify.service';
 import { DemoServiceService } from '../../_service/demoService.service';
 import { Router } from '@angular/router';
+import { CommonService } from '../../_service/common.service';
 @Component({
   selector: 'app-request-create',
   templateUrl: './request-create.component.html',
@@ -14,7 +15,7 @@ export class RequestCreateComponent implements OnInit {
   @ViewChild('closeTag') closeTag: ElementRef;
 
   requestForm: FormGroup;
-  requestTypes = [{ value: 'lawbank', display: '法源網' }];
+  requestTypes;
   iSearchKey = '';
   iReferenceKey = '';
   request: SpiderRequest;
@@ -23,11 +24,13 @@ export class RequestCreateComponent implements OnInit {
     private fb: FormBuilder,
     private alertify: AlertifyService,
     private service: DemoServiceService,
-    private router: Router
+    private router: Router,
+    private commonService: CommonService
   ) {}
 
   ngOnInit() {
     console.log('init');
+    this.commonService.getRequestType().subscribe( o => this.requestTypes = o.list);
     this.createRegisterForm();
   }
 
@@ -51,7 +54,7 @@ export class RequestCreateComponent implements OnInit {
 
   createRegisterForm() {
     this.requestForm = this.fb.group({
-      requestType: ['lawbank', Validators.required],
+      requestType: [{value: 'lawbank', disabled: true}, Validators.required],
       searchKeys: this.fb.array([new FormControl()]),
       referenceKeys: this.fb.array([new FormControl()]),
       requester: ['', Validators.required],
