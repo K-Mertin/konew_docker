@@ -1,7 +1,10 @@
 <div class="modal-dialog modal-lg" role="document">
   <div class="modal-content col-md-12">
     <div class="modal-header">
-      <span class="modal-title" id="loancaseEditModal">申貸案件編輯</span>
+      <span class="modal-title" id="loancaseEditModal">
+          <span *ngIf="newState">申貸案件新增</span>
+          <span *ngIf="!newState">申貸案件編輯</span>
+      </span>
       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -11,10 +14,10 @@
         <div class="form-group">
           <div class="col-sm-6">
             <div class="col-sm-4">
-              <label>*統編：</label>
+              <label>*ID：</label>
             </div>
             <div class="col-sm-8">
-              <input class="input" type="text" placeholder="統編" formControlName="idNumber" name='idNumber' (blur)="checkDuplicate($event)">
+              <input class="input" type="text" placeholder="ID" formControlName="idNumber" name='idNumber' (blur)="checkDuplicate($event)">
             </div>
             <div class="col-sm-4">
               <label>*申請人：</label>
@@ -29,10 +32,10 @@
               <input class="input" type="text" placeholder="連絡人" formControlName="contactor">
             </div>
             <div class="col-sm-4">
-              <label>*業務人員：</label>
+              <label>*營業員：</label>
             </div>
             <div class="col-sm-8">
-              <input class="input" type="text" placeholder="業務人員" formControlName="sales">
+              <input class="input" type="text" placeholder="營業員" formControlName="sales">
             </div>
             <div class="col-sm-4">
               <label>票信查詢：</label>
@@ -64,33 +67,37 @@
             </div>
             <div class="col-sm-6">
               <!-- <input class="input" type="text" placeholder="申請日" formControlName="applyDate"> -->
-              <input type="text" class="form-control" [bsConfig]="dpConfig" placeholder="申請日" bsDatepicker formControlName="applyDate"  />
+              <input type="text" class="form-control" [bsConfig]="dpConfig" placeholder="申請日" bsDatepicker formControlName="applyDate"/>
+                <!-- value="{{ applyDate | date: 'yyyy/MM/dd' }}" [(ngModel)]="applyDate" /> -->
             </div>
             <div class="col-sm-6">
               <label>業務拜訪日期：</label>
             </div>
             <div class="col-sm-6">
               <!-- <input class="input" type="text" placeholder="業務拜訪日期" formControlName="salesVisitDate"> -->
-              <input type="text" class="form-control" [bsConfig]="dpConfig" placeholder="業務拜訪日期" bsDatepicker formControlName="salesVisitDate">
-                <!-- value="{{ salesVisitDate | date: 'yyyy/MM/dd' }}" [(ngModel)]="salesVisitDate" -->
+              <input type="text" class="form-control" [bsConfig]="dpConfig" placeholder="業務拜訪日期" bsDatepicker formControlName="salesVisitDate"/>
+                <!-- value="{{ salesVisitDate | date: 'yyyy/MM/dd' }}" [(ngModel)]="salesVisitDate" /> -->
             </div>
             <div class="col-sm-6">
               <label>最後回覆日：</label>
             </div>
             <div class="col-sm-6">
               <!-- <input class="input" type="text" placeholder="最後回覆日" formControlName="lastReplyDate"> -->
-              <input type="text" class="form-control" [bsConfig]="dpConfig" placeholder="最後回覆日" bsDatepicker formControlName="lastReplyDate">
+              <input type="text" class="form-control" [bsConfig]="dpConfig" placeholder="最後回覆日" bsDatepicker formControlName="lastReplyDate"/>
                 <!-- value="{{ lastReplyDate | date: 'yyyy/MM/dd' }}" [(ngModel)]="lastReplyDate" /> -->
             </div>
           </div>
         </div>
       </form>
     </div>
-    <div *ngIf="alertMessage && newState" class="col-sm-12 alert alert-danger">
-      {{alertMessage}}
+    <div *ngIf="duplicateMessage && newState" class="col-sm-12 alert alert-danger">
+      {{duplicateMessage}}
+    </div>
+    <div *ngIf="relationMessage && newState" class="col-sm-12 alert alert-danger">
+      {{relationMessage}}
     </div>
     <div *ngIf="loancaseForm.controls['idNumber'].touched && loancaseForm.controls['idNumber'].invalid" class="col-sm-12 alert alert-danger">
-      統編為必要欄位，且須大於8碼
+      ID為必要欄位，且須大於8碼
     </div>
     <div *ngIf="loancaseForm.controls['name'].touched && loancaseForm.controls['name'].invalid" class="col-sm-12 alert alert-danger">
       申請人為必要欄位
@@ -99,7 +106,7 @@
       聯絡人為必要欄位
     </div>
     <div *ngIf="loancaseForm.controls['sales'].touched && loancaseForm.controls['sales'].invalid" class="col-sm-12 alert alert-danger">
-      業務人員為必要欄位
+      營業員為必要欄位
     </div>
     <div *ngIf="loancaseForm.controls['applyDate'].touched && loancaseForm.controls['applyDate'].invalid" class="col-sm-12 alert alert-danger">
       申請日為必要欄位

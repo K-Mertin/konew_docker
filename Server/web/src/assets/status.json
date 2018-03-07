@@ -1,0 +1,14 @@
+{
+  "map": {
+    "new": "建檔",
+    "insert":"新增",
+    "update":"修改",
+    "modified":"修改",
+    "processing":"處理中",
+    "created":"建檔",
+    "failed":"失敗",
+    "approved": "覆核",
+    "finished": "完成",
+    "deleted": "刪除"
+  }
+}

@@ -20,7 +20,7 @@ export class LoancaseService {
   }
 
   addLoancase(loancase: LoanCase) {
-    console.log(loancase);
+    // console.log(loancase);
 
     return this._http.post(this.baseUrl + '/add', loancase, {
       headers: new HttpHeaders().set('Content-Type', 'application/form-data')

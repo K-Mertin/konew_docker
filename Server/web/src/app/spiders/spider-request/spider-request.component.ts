@@ -9,6 +9,7 @@ import {
 import { SpiderRequest } from '../../_model/SpiderRequest';
 import { DemoServiceService } from '../../_service/demoService.service';
 import { AlertifyService } from '../../_service/alertify.service';
+import { CommonService } from '../../_service/common.service';
 
 @Component({
   selector: 'app-spider-request',
@@ -27,10 +28,15 @@ export class SpiderRequestComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private alertify: AlertifyService,
-    private service: DemoServiceService
+    private service: DemoServiceService,
+    private commonService: CommonService
   ) {}
 
   ngOnInit() {
+    this.commonService.getRequestType().subscribe(l => {
+      this.requestTypes = l.list;
+    }
+    );
     this.createRegisterForm();
   }
 

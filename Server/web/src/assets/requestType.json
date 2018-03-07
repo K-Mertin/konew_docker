@@ -1,0 +1,13 @@
+{
+  "list": [
+    {
+      "value": "lawbank",
+      "display": "法源網"
+    },
+    {
+      "value": "opengov",
+      "display": "政府公司資料"
+    }
+  ],
+  "map": { "lawbank": "法源網", "opengov": "政府公司資料"}
+}

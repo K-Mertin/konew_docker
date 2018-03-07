@@ -11,11 +11,11 @@
       <a class="navbar-brand" [routerLink]="['home']">Konew</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-        <li>
+      <ul class="nav navbar-nav" *ngIf="loggedIn()">
+        <li routerLinkActive="active"  *ngIf="authService.decodeToken?.role !== 'SALES'">
           <a [routerLink]="['spider/history']">法源網</a>
         </li>
-        <li class="dropdown">
+        <li class="dropdown" routerLinkActive="active"  *ngIf="authService.decodeToken?.role !== 'SALES'">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">關係人
             <span class="caret"></span>
           </a>
@@ -27,30 +27,73 @@
               <a [routerLink]="['relation/query']">查詢</a>
             </li>
           </ul>
-        </li> 
-        <li>
+        </li>
+        <li routerLinkActive="active">
           <a [routerLink]="['loancase']">申貸案件</a>
         </li>
-        </ul>
-        <!-- <ul class="nav navbar-nav">
-          <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">LawBank <span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a [routerLink]="['spider/request']">New Request</a></li> -->
-        <!-- <li><a [routerLink]="['spider/result']">Result Query</a></li> -->
-        <!-- <li><a [routerLink]="['spider/history']">History Request</a></li>
-              </ul>
-        </ul> -->
-        <!-- <ul class="nav navbar-nav">
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">RiskControl <span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li><a [routerLink]="['risk/create']">Create</a></li>
-                  <li><a [routerLink]="['risk/query']">Query</a></li>
-                  <li><a [routerLink]="['risk/report']">Report</a></li>
-                </ul>
-          </ul>  -->
+        <li routerLinkActive="active" *ngIf="authService.decodeToken?.role === 'admin'">
+          <a [routerLink]="['setting']">系統設定</a>
+        </li>
+      </ul>
+      
+      <form *ngIf="!loggedIn()" class="navbar-form navbar-right" #loginFrom="ngForm" (ngSubmit)="login()">
+        <div class="form-group">
+          <input type="text" #username="ngModel" placeholder="帳號" class="form-control" required name="username" [(ngModel)]="model.username">
+        </div>
+        <div class="form-group">
+          <input type="password" #password="ngModel" placeholder="密碼" class="form-control" required name="password" [(ngModel)]="model.password">
+        </div>
+        <button type="submit" [disabled]="!loginFrom.valid" class="btn btn-success">登入</button>
+      </form>
+
+      <ul *ngIf="loggedIn()" class="nav navbar-nav navbar-right">
+        <li class="dropdown" dropdown>
+          <a (click)="false" class="dropdown-toggle" data-toggle="dropdown">目前登入： {{ roleMap[authService.decodeToken?.role]  | uppercase}} {{authService.decodeToken?.username | titlecase}}
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu">
+            <!-- <li role="separator" class="divider"></li> -->
+            <li>
+              <a data-toggle="modal" data-target="#passwordModal">
+                <i class="fa fa-edit"></i>修改密碼
+              </a>
+            </li>
+            <li>
+              <a (click)="logout()">
+                <i class="fa fa-sign-out"></i>登出</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
     </div>
     <!--/.navbar-collapse -->
   </div>
 </nav>
+<div class='text-danger text-center'><strong>{{idleState}}</strong></div>
+
+
+<div *ngIf="loggedIn()" class="modal fade col-md-12" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content col-md-12">
+      <div class="modal-body">
+        <form #pwdFrom="ngForm" (ngSubmit)="changePwd()">
+          <div class="form-group">
+            <label>目前密碼：</label>
+            <input type="password" #oldPassword="ngModel" placeholder="目前密碼" class="form-control" required name="oldPassword" [(ngModel)]="pwdModel.oldPassword">
+          </div>
+          <div class="form-group">
+            <label>新設密碼：</label>
+            <input type="password" #newPassword="ngModel" placeholder="新設密碼" class="form-control" required name="newPassword" [(ngModel)]="pwdModel.newPassword">
+          </div>
+          <div class="form-group">
+            <label>密碼確認：</label>
+            <input type="password" #againPassword="ngModel" placeholder="密碼確認" class="form-control" required name="againPassword" [(ngModel)]="pwdModel.againPassword">
+          </div>
+          <div *ngIf="newPassword.value != againPassword.value && (newPassword.touched || againPassword.touched)" class="alert alert-danger">兩次密碼不一樣</div>
+          <button type="submit" [disabled]="!pwdFrom.valid" class="btn btn-success">修改</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

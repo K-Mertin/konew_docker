@@ -4,6 +4,7 @@ import { AlertifyService } from '../../_service/alertify.service';
 import { RelationService } from '../../_service/relation.service';
 import { Relation } from '../../_model/Relation';
 import { CommonService } from '../../_service/common.service';
+import { AuthService } from '../../_service/auth.service';
 
 
 @Component({
@@ -24,7 +25,8 @@ export class RelationEditComponent implements OnInit {
     private fb: FormBuilder,
     private alertify: AlertifyService,
     private relationService: RelationService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private authService: AuthService
   ) { }
 
   ngOnInit() {
@@ -48,7 +50,7 @@ export class RelationEditComponent implements OnInit {
         this.fb.group(
           {
             name: [''],
-            idNumber: [''],
+            idNumber: ['', Validators.minLength(8)],
             memo: [[]]
           },
           { validator: this.checkValidate('name', 'idNumber') }
@@ -61,7 +63,7 @@ export class RelationEditComponent implements OnInit {
         this.fb.group(
           {
             name: [''],
-            idNumber: [''],
+            idNumber: ['', Validators.minLength(8)],
             relationType: [[], Validators.required],
             memo: [[]]
           },
@@ -87,7 +89,7 @@ export class RelationEditComponent implements OnInit {
         this.fb.group(
           {
             name: [''],
-            idNumber: [''],
+            idNumber: ['', Validators.minLength(8)],
             memo: [[]]
           },
           { validator: this.checkValidate('name', 'idNumber') }
@@ -97,7 +99,7 @@ export class RelationEditComponent implements OnInit {
         this.fb.group(
           {
             name: [''],
-            idNumber: [''],
+            idNumber: ['', Validators.minLength(8)],
             relationType: [[], Validators.required],
             memo: [[]]
           },
@@ -110,7 +112,7 @@ export class RelationEditComponent implements OnInit {
         )
       ]),
       reason: ['', Validators.required],
-      user: ['', Validators.required]
+      user: [{value: this.authService.currentUser, disabled: true}, Validators.required]
     });
   }
 
@@ -121,7 +123,7 @@ export class RelationEditComponent implements OnInit {
       this.fb.group(
         {
           name: [''],
-          idNumber: [''],
+          idNumber: ['', Validators.minLength(8)],
           relationType: [[], Validators.required],
           memo: [[]]
         },
@@ -142,7 +144,7 @@ export class RelationEditComponent implements OnInit {
       this.fb.group(
         {
           name: [''],
-          idNumber: [''],
+          idNumber: ['', Validators.minLength(8)],
           memo: [[]]
         },
         { validator: this.checkValidate('name', 'idNumber') }
@@ -223,7 +225,7 @@ export class RelationEditComponent implements OnInit {
     this.relationEdit = Object.assign(
       {},
       this.relationEdit,
-      this.relationForm.value
+      this.relationForm.getRawValue()
     );
 
     this.relationEdit.objects.forEach(object => {
@@ -263,7 +265,7 @@ export class RelationEditComponent implements OnInit {
       });
     });
 
-    // console.log(this.relationEdit);
+    this.relationEdit.status = 'lived';
 
     this.relationService.updateRelation(this.relationEdit).subscribe(
       () => {

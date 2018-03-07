@@ -12,6 +12,7 @@ import { Relation } from '../../_model/Relation';
 import { environment } from '../../../environments/environment';
 import { RELATIONTYPE } from '../../_data/RelationType';
 import { CommonService } from '../../_service/common.service';
+import { AuthService } from '../../_service/auth.service';
 
 @Component({
   selector: 'app-relationlist',
@@ -24,12 +25,14 @@ export class RelationlistComponent implements OnInit {
   relation: Relation;
   filePath: string;
   autoCompleteList;
+  loading = false;
 
   constructor(
     private fb: FormBuilder,
     private alertify: AlertifyService,
     private relationService: RelationService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -45,7 +48,7 @@ export class RelationlistComponent implements OnInit {
         this.fb.group(
           {
             name: [''],
-            idNumber: [''],
+            idNumber: ['', Validators.minLength(8)],
             memo: [[]]
           },
           { validator: this.checkValidate('name', 'idNumber') }
@@ -55,7 +58,7 @@ export class RelationlistComponent implements OnInit {
         this.fb.group(
           {
             name: [''],
-            idNumber: [''],
+            idNumber: ['', Validators.minLength(8)],
             relationType: [[], Validators.required],
             memo: [[]]
           },
@@ -63,7 +66,7 @@ export class RelationlistComponent implements OnInit {
         )
       ]),
       reason: ['', Validators.required],
-      user: ['', Validators.required]
+      user: [{value: this.authService.currentUser, disabled: true}, Validators.required]
     });
   }
 
@@ -74,7 +77,7 @@ export class RelationlistComponent implements OnInit {
       this.fb.group(
         {
           name: [''],
-          idNumber: [''],
+          idNumber: ['', Validators.minLength(8)],
           relationType: [[], Validators.required],
           memo: [[]]
         },
@@ -90,7 +93,7 @@ export class RelationlistComponent implements OnInit {
       this.fb.group(
         {
           name: [''],
-          idNumber: [''],
+          idNumber: ['', Validators.minLength(8)],
           memo: [[]]
         },
         { validator: this.checkValidate('name', 'idNumber') }
@@ -105,7 +108,7 @@ export class RelationlistComponent implements OnInit {
   }
 
   addRelation() {
-    this.relation = Object.assign({}, this.relationForm.value);
+    this.relation = Object.assign({}, this.relationForm.getRawValue());
     console.log(this.relation);
     this.relation.objects.forEach(object => {
       object.relationType = object.relationType.map(r => r.value);
@@ -144,6 +147,23 @@ export class RelationlistComponent implements OnInit {
     };
   }
 
+  checkDuplicate(event) {
+    console.log('check');
+    const value = event.target['value'];
+    const name = event.target['name'];
+
+    if ( event.target['value'].trim().length > 0) {
+      this.relationService
+      .checkDuplicate('subjects', value)
+      .subscribe(res => {
+        if ( res > 0 ) {
+          this.alertify.error( value + ' 已建檔，請使用修改功能。');
+          event.target['value'] = '';
+        }
+      });
+    }
+  }
+
   fileChange(event) {
     const fileList: FileList = event.target.files;
     if (fileList.length > 0) {
@@ -151,7 +171,9 @@ export class RelationlistComponent implements OnInit {
       const fileSize: number = fileList[0].size;
       if (fileSize <= 10485760) {
         const formData: FormData = new FormData();
-        formData.append('Document', file);
+        formData.append('Document', file, file.name);
+        formData.append('user', this.authService.currentUser);
+        this.loading = true;
         this.relationService.uplodaRelation(formData).subscribe(
           response => {
             if (response === 'success') {
@@ -164,11 +186,12 @@ export class RelationlistComponent implements OnInit {
             this.alertify.error(error);
           },
           () => {
+            this.loading = false;
             event.target.value = '';
           }
         );
       } else {
-        this.alertify.error('File size is exceeded');
+        this.alertify.error('檔案超過10MB');
       }
     } else {
       this.alertify.error('Something went Wrong.');

@@ -1,0 +1,22 @@
+<div class="container">
+  <div>
+    <select name="settingName" id="settingName" (change)="refreshSetting($event)" #settingName> 
+      <option *ngFor="let setting of settingList">{{setting}}</option>
+    </select>
+  </div>
+  <div>
+    <form class="inline-form" (ngSubmit)="insertSettingPara(settingName.value, paraKey.value,paraValue.value)">
+      <div class="form-group">
+        <input type="text" placeholder="參數名稱" required name="key" #paraKey>
+        <input type="text" placeholder="參數數值" required name="value" #paraValue>
+        <button type="submit" class="btn btn-success">新增</button>
+      </div>
+    </form>
+  </div>
+  <div *ngFor="let key of settingKeys">
+    <div *ngIf="key != '_id' && key != 'settingName'">
+      <label> {{key}}</label>
+      <input type="text" value="  {{setting[key]}}" (change)="updateSetting($event,settingName.value, key)">
+    </div>
+  </div>
+</div>

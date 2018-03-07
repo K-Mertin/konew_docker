@@ -29,24 +29,28 @@
           <div class="col-md-12">
             <div class="margin-20 pull-right">
               <button (click)="addSubject()" class='btn btn-primary'>
-                <i class="fa fa-plus fa-1" aria-hidden="true">添加借款人</i>
+                <i class="fa fa-plus fa-1" aria-hidden="true">添加借戶主體</i>
               </button>
             </div>
           </div>
           <div class="col-md-12">
             <div *ngFor="let subject of relationForm.controls['subjects']['controls']; let i=index">
-              <span>*借款人 {{i + 1}}</span>
+              <span>*借戶主體 {{i + 1}}</span>
               <button class='btn btn-warning pull-right' *ngIf="relationForm.controls['subjects'].controls.length > 1" (click)="remove(i,'subjects')">
                 <i class="fa fa-times"></i>
               </button>
               <div class="form-group" [formGroupName]="i">
                 <input class="input" type="text" placeholder="*負責人/公司名" formControlName="name">
-                <input class="input" type="text" placeholder="*負責人/公司統編" formControlName="idNumber">
-                <tag-input formControlName="memo" placeholder='+' secondaryPlaceholder='請輸入註記'>
+                <input class="input" type="text" placeholder="*負責人/公司ID" formControlName="idNumber">
+                <tag-input formControlName="memo" placeholder='+' secondaryPlaceholder='請輸入備註'>
                 </tag-input>
                 <div *ngIf="(relationForm.controls['subjects'].controls[i].controls.idNumber.touched||relationForm.controls['subjects'].controls[i].controls.name.touched) && relationForm.controls['subjects'].controls[i].hasError('checkValidate')"
                   class="alert alert-danger">
-                  姓名與統編須擇一輸入
+                  名稱與ID須擇一輸入
+                </div>
+                <div *ngIf="relationForm.controls['subjects'].controls[i].controls.idNumber.touched && relationForm.controls['subjects'].controls[i].controls.idNumber.invalid"
+                  class="alert alert-danger">
+                  ID 最小長度 8碼
                 </div>
               </div>
             </div>
@@ -74,16 +78,20 @@
 
               <div class="form-group" [formGroupName]="i">
                 <input class="input" type="text" placeholder="*關係人/公司名" formControlName="name">
-                <input class="input" type="text" placeholder="*關係人/公司統編" formControlName="idNumber">
+                <input class="input" type="text" placeholder="*關係人/公司ID" formControlName="idNumber">
                 <tag-input formControlName="relationType" placeholder='+' secondaryPlaceholder='請輸入關係'>
                   <tag-input-dropdown [showDropdownIfEmpty]="true" [autocompleteItems]="autoCompleteList">
                   </tag-input-dropdown>
                 </tag-input>
-                <tag-input formControlName="memo" placeholder='+' secondaryPlaceholder='請輸入註記'>
+                <tag-input formControlName="memo" placeholder='+' secondaryPlaceholder='請輸入備註'>
                 </tag-input>
                 <div *ngIf="(relationForm.controls['objects'].controls[i].controls.idNumber.touched||relationForm.controls['objects'].controls[i].controls.name.touched) && relationForm.controls['objects'].controls[i].hasError('checkValidate')"
                   class="alert alert-danger">
-                  姓名與統編須擇一輸入
+                  名稱與ID須擇一輸入
+                </div>
+                <div *ngIf="relationForm.controls['objects'].controls[i].controls.idNumber.touched && relationForm.controls['objects'].controls[i].controls.idNumber.invalid"
+                  class="alert alert-danger">
+                  ID 最小長度 8碼
                 </div>
                 <div *ngIf="relationForm.controls['objects'].controls[i].controls.relationType.touched && relationForm.controls['objects'].controls[i].controls.relationType.invalid"
                   class="alert alert-danger">
@@ -98,7 +106,7 @@
     <div class="modal-footer col-md-12">
       <button type="button" class="btn btn-primary" *ngIf="!relationForm.invalid" (click)="saveChange()">儲存異動</button>
       <button type="button" class="btn btn-warning" *ngIf="relationForm.touched" (click)="setRelationForm()">復原</button>
-      <button type="button" class="btn btn-danger"  *ngIf="!relationForm.invalid" (click)="delete()">刪除</button>
+      <button type="button" class="btn btn-danger" *ngIf="!relationForm.invalid" (click)="delete()">刪除</button>
       <button type="button" class="btn btn-secondary" data-dismiss="modal" #closeTag>關閉</button>
     </div>
   </div>
