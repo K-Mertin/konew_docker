@@ -1,0 +1,21 @@
+{
+  "list": [
+    {
+      "value": "RC",
+      "display": "風控"
+    },
+    {
+      "value": "SALES",
+      "display": "營業員"
+    },
+    {
+      "value": "CS",
+      "display": "客服"
+    },
+    {
+      "value": "OP",
+      "display": "內勤"
+    }
+  ],
+  "map": { "RC": "風控", "SALES": "營業員", "CS": "客服", "OP": "內勤"}
+}

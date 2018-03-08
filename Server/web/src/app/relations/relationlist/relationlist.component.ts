@@ -65,7 +65,7 @@ export class RelationlistComponent implements OnInit {
           { validator: this.checkValidate('name', 'idNumber') }
         )
       ]),
-      reason: ['', Validators.required],
+      reason: ['新增', Validators.required],
       user: [{value: this.authService.currentUser, disabled: true}, Validators.required]
     });
   }

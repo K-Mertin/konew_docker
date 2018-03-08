@@ -13,7 +13,7 @@ web:
   build: ./web
   volumes:
     - /app
-  command: ng build -prod --aot=false
+  # command: ng build -prod --aot=false
 
 nginx:
   restart: always

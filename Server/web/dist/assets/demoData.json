@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "searchKeys":["SK1","SK2"],
+        "referenceKeys":["RK1","RK2","RK3","RK4"],
+        "tags":["SK1","RK1","RK2","RK3"],
+        "source": "source 1",
+        "title" : "title 1",
+        "content":"test article 1",
+        "url":""
+    },
+    {
+        "id": 2,
+        "searchKeys":["SK1","SK2"],
+        "referenceKeys":["RK1","RK2","RK3","RK4"],
+        "tags":["SK1","SK1","RK2","RK4"],
+        "source": "source 1",
+        "title" : "title 2",
+        "content":"test article 2",
+        "url":""
+    },
+    {
+        "id": 3,    
+        "searchKeys":["SK1","SK2"],
+        "referenceKeys":["RK1","RK2","RK3","RK4"],
+        "tags":["SK2","RK3"],
+        "source": "source 1",
+        "title" : "title 3",
+        "content":"test article 3",
+        "url":""
+    }
+]
