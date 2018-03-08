@@ -75,12 +75,16 @@ export class RelationqueryComponent implements OnInit {
   filterEnterEvent() {
     // console.log(this.element.nativeElement);
     // this.list = [];
+    let value;
     return Observable.fromEvent(this.input.nativeElement, 'input')
       .filter(e => e['target'].value.trim().length > 0)
-      .do(v => (this.list = []))
+      .do(v => {
+        value = v['target'].value;
+        this.list = [];
+      })
       .debounceTime(500)
       .switchMap(e =>
-        this.relationService.getAutoComplete(e['target'].value, this.queryType)
+        this.relationService.getAutoComplete(value, this.queryType)
       )
       .subscribe(p => {
         this.list = this.list.concat(p);

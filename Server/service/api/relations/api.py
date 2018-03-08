@@ -320,8 +320,8 @@ def importRelation(relation):
     idNumber = relation['subjects'][0]['idNumber']
 
     ret = apiRelations.dataAccess.get_relation(idNumber)
-    # print(ret)
-    if ret:
+    # print(idNumber  )
+    if ret and idNumber:
         ret['reason'] = relation['reason']
         ret['subjects'][0]['name'] = relation['subjects'][0]['name']
 
