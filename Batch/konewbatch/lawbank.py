@@ -318,6 +318,9 @@ class LawBankParser:
         
             docList=self.driver.find_elements_by_css_selector('#table3 a')
             
+            if len(docList) == 0:
+                continue
+
             for doc in docList:
                 currentUrl=doc.get_attribute('href')
                 content = requests.get(currentUrl, headers = self.headers)
