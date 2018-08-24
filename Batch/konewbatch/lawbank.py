@@ -331,13 +331,13 @@ class LawBankParser:
                 time.sleep(0.5)
                 
 
-            nextPage = self.driver.find_element_by_css_selector('#form1 > div:nth-child(3) > table:nth-child(2) > tbody > tr > td:nth-child(2) > a:nth-child(3)')
+            nextPage = self.driver.find_element_by_css_selector('#form1 > div:nth-child(3) > table:nth-child(6) > tbody > tr > td:nth-child(2) > a:nth-child(3)')
             # print(nextPage.text)
-
+                                                                
             while nextPage.is_displayed():
                 time.sleep(0.5)
                 nextPage.click()
-                nextPage = self.driver.find_element_by_css_selector('#form1 > div:nth-child(3) > table:nth-child(2) > tbody > tr > td:nth-child(2) > a:nth-child(3)')
+                nextPage = self.driver.find_element_by_css_selector('#form1 > div:nth-child(3) > table:nth-child(6) > tbody > tr > td:nth-child(2) > a:nth-child(3)')
                 
                 docList= self.driver.find_elements_by_css_selector('#table3 a')
                 
