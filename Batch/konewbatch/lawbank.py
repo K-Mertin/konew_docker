@@ -55,9 +55,9 @@ class LawBankParser:
         document = {}
         try:
             soup = BeautifulSoup(content.text, "html.parser")
-            title = soup.select('.Table-List tr > td:nth-of-type(2)')[0].text
-            date = soup.select('.Table-List tr > td:nth-of-type(2)')[1].text
-            reason = soup.select('.Table-List tr > td:nth-of-type(2)')[2].text
+            title = soup.select('.Table-List tr > td:nth-of-type(1)')[0].text
+            date = soup.select('.Table-List tr > td:nth-of-type(1)')[1].text
+            reason = soup.select('.Table-List tr > td:nth-of-type(1)')[2].text
             content = soup.select('.Table-List pre')[0].text
             # title = self.driver.find_element_by_css_selector('.Table-List tr:nth-child(1)> td:nth-child(2)').text
             # date = self.driver.find_element_by_css_selector('.Table-List tr:nth-child(2)> td:nth-child(2)').text
@@ -258,7 +258,7 @@ class LawBankParser:
         try:
             self.driver.switch_to_default_content()
             self.driver.switch_to_frame('menuFrame')
-            courtGroups = self.driver.find_elements_by_class_name('court_group')
+            # courtGroups = self.driver.find_elements_by_class_name('court_group')
             yearList = []
             monthList = []
             
@@ -266,24 +266,27 @@ class LawBankParser:
                 self.courts = []
                 self.totalCount = 0    
         
-            for courtGroup in courtGroups:
-                lists = courtGroup.find_elements_by_css_selector('li')
-                # print(lists)
-                # self.driver.find_elements_by_css_selector
-                for li in lists:
-                    if not li.text.endswith(' 0'):
-                        # print( int(li.text.split(' ')[1]))
-                        if startYear == 0 :
-                            self.totalCount +=  int(li.text.split(' ')[1])#   int(re.search( r'\(.*\)', li.text).group().replace('(','').replace(')',''))
-                        if int(li.text.split(' ')[1]) > 999:
-                            if endYear - startYear >=1:
-                                yearList.append(li.get_attribute('id'))
-                            elif endMonth - startMonth >= 1:
-                                monthList.append( li.get_attribute('id'))
-                            else:
-                                self.logger.logger.info(searchKey+li.get_attribute('id')+str(startYear)+str(startMonth))
+            # for courtGroup in courtGroups:
+                # lists = courtGroup.find_elements_by_css_selector('li')
+            lists = self.driver.find_elements_by_css_selector('.tab-content li')
+            # print(lists)
+            # self.driver.find_elements_by_css_selector
+            for li in lists:                
+                text = li.get_attribute("innerText")
+                print(text.split('\xa0'))
+                if not text.endswith(' 0') and len(li.get_attribute('id')) >2:
+                    print( int(text.split('\xa0')[1]))
+                    if startYear == 0 :
+                        self.totalCount +=  int(text.split('\xa0')[1])#   int(re.search( r'\(.*\)', li.text).group().replace('(','').replace(')',''))
+                    if int(text.split('\xa0')[1]) > 999:
+                        if endYear - startYear >=1:
+                            yearList.append(li.get_attribute('id'))
+                        elif endMonth - startMonth >= 1:
+                            monthList.append( li.get_attribute('id'))
                         else:
-                            self.courts.append(li.find_element_by_css_selector('a').get_attribute('href'))    
+                            self.logger.logger.info(searchKey+li.get_attribute('id')+str(startYear)+str(startMonth))
+                    else:
+                        self.courts.append(li.find_element_by_css_selector('a').get_attribute('href'))    
 
             if len(yearList)>0:
                 for courtCode in yearList:
@@ -316,39 +319,51 @@ class LawBankParser:
             documents = []
             self.driver.get(c)
         
-            docList=self.driver.find_elements_by_css_selector('#table3 a')
+            # docList=self.driver.find_elements_by_css_selector('#table3 a')
+            docList=self.driver.find_elements_by_css_selector('#table3 tr')
             
             if len(docList) == 0:
                 continue
 
             for doc in docList:
-                currentUrl=doc.get_attribute('href')
-                content = requests.get(currentUrl, headers = self.headers)
-                documents.append(self.PageAnalysis(currentUrl, content, searchKeys, referenceKeys))
-                processCount += 1
-                if self.totalCount >10 and processCount%(int(self.totalCount/10))==0 :
-                    self.logger.logger.info(str(processCount)+'_'+str(processCount*100/self.totalCount)+'%')
-                time.sleep(0.5)
+                if doc.find_elements_by_css_selector('a') and not doc.find_elements_by_css_selector('.special-mark'):
+                    # print(doc.find_element_by_tag_name('a').get_attribute('href'))
+                    currentUrl = doc.find_element_by_tag_name('a').get_attribute('href')
+                    # currentUrl=doc.get_attribute('href')
+                    # print(currentUrl)
+                    content = requests.get(currentUrl, headers = self.headers)
+                    documents.append(self.PageAnalysis(currentUrl, content, searchKeys, referenceKeys))
+                    # print('page process')
+                    processCount += 1
+                    if self.totalCount >10 and processCount%(int(self.totalCount/10))==0 :
+                        self.logger.logger.info(str(processCount)+'_'+str(processCount*100/self.totalCount)+'%')
+                    time.sleep(0.5)
                 
 
-            nextPage = self.driver.find_element_by_css_selector('#form1 > div:nth-child(3) > table:nth-child(6) > tbody > tr > td:nth-child(2) > a:nth-child(3)')
+            nextPage = self.driver.find_element_by_css_selector('#form1 > div.main-panel > table:nth-child(4) > tbody > tr > td:nth-child(2) > a:nth-child(3)')
             # print(nextPage.text)
                                                                 
             while nextPage.is_displayed():
                 time.sleep(0.5)
                 nextPage.click()
-                nextPage = self.driver.find_element_by_css_selector('#form1 > div:nth-child(3) > table:nth-child(6) > tbody > tr > td:nth-child(2) > a:nth-child(3)')
+                print('-------------change page-----------------')
+                nextPage = self.driver.find_element_by_css_selector('#form1 > div.main-panel > table:nth-child(4) > tbody > tr > td:nth-child(2) > a:nth-child(3)')
                 
-                docList= self.driver.find_elements_by_css_selector('#table3 a')
-                
+                # docList= self.driver.find_elements_by_css_selector('#table3 a')
+                docList=self.driver.find_elements_by_css_selector('#table3 tr')
+               
                 for doc in docList:
-                    currentUrl=doc.get_attribute('href')
-                    content = requests.get(currentUrl,headers = self.headers)
-                    documents.append(self.PageAnalysis(currentUrl, content, searchKeys, referenceKeys))
-                    processCount += 1
-                    if self.totalCount >10 and processCount%(int(self.totalCount/10))==0 :
-                        self.logger.logger.info(str(processCount)+'_'+str(processCount*100/self.totalCount)+'%')
-                    time.sleep(0.5)
+                    if doc.find_elements_by_css_selector('a') and not doc.find_elements_by_css_selector('.special-mark'):
+                        # print(doc.find_element_by_tag_name('a').get_attribute('href'))
+                        currentUrl = doc.find_element_by_tag_name('a').get_attribute('href')
+                        # currentUrl=doc.get_attribute('href')
+                        # print(currentUrl)
+                        content = requests.get(currentUrl,headers = self.headers)
+                        documents.append(self.PageAnalysis(currentUrl, content, searchKeys, referenceKeys))
+                        processCount += 1
+                        if self.totalCount >10 and processCount%(int(self.totalCount/10))==0 :
+                            self.logger.logger.info(str(processCount)+'_'+str(processCount*100/self.totalCount)+'%')
+                        time.sleep(0.5)
             # self.driver.find_elements_by_css_selector('#table3 a')[0].click()
             # documents.append(self.PageAnalysis(searchKeys, referenceKeys))
             # nextPage = self.driver.find_element_by_css_selector('tbody > tr:nth-child(1) > td:nth-child(2) > a:nth-child(3)')
