@@ -278,7 +278,7 @@ class LawBankParser:
                     print( int(text.split('\xa0')[1]))
                     if startYear == 0 :
                         self.totalCount +=  int(text.split('\xa0')[1])#   int(re.search( r'\(.*\)', li.text).group().replace('(','').replace(')',''))
-                    if int(text.split('\xa0')[1]) > 999:
+                    if int(text.split('\xa0')[1]) > 199:
                         if endYear - startYear >=1:
                             yearList.append(li.get_attribute('id'))
                         elif endMonth - startMonth >= 1:
